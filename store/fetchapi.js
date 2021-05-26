@@ -10,6 +10,7 @@ const api = {
     milestoneSchema: [],
     deliverSchema: [],
     workbook: {},
+    editMilestone: null,
   },
   actions: {
     getExcel: function ({ state, commit, dispatch, getters }) {
@@ -45,6 +46,7 @@ const api = {
               let dt = ms[mt.name].split('/')
               ms[mt.name] = dt[2] + '-' + dt[0] + '-' + dt[1]
             }
+            ms.__id = guid()
           })
           Vue.set(
             ms,
@@ -60,11 +62,20 @@ const api = {
     writeCollection() {},
   },
   mutations: {
-    setMilestone: function (state, { index, value }) {
+    setMilestone: function (state, value) {
+      let index = state.milestones.findIndex(
+        (e) => e.__id === value.__id
+      )
+      console.log(index, value)
+
       Vue.set(state.milestones, index, {
         ...value,
         cardInfo: getMilestoneCard(value, state.workbook.miletypes),
       })
+    },
+    setEditMilestone: function (state, value) {
+      state.editMilestone = value
+      console.log(state.editMilestone)
     },
   },
 }
@@ -81,5 +92,25 @@ function getMilestoneCard(ms, types) {
   })
   return card
 }
-
+function guid() {
+  function s4() {
+    return Math.floor((1 + Math.random()) * 0x10000)
+      .toString(16)
+      .substring(1)
+  }
+  return (
+    s4() +
+    s4() +
+    '-' +
+    s4() +
+    '-' +
+    s4() +
+    '-' +
+    s4() +
+    '-' +
+    s4() +
+    s4() +
+    s4()
+  )
+}
 export default api
