@@ -1,8 +1,11 @@
 <template lang="pug">
   v-app
     v-main
-      v-btn(@click='openExcel()') Open
-      cards-view(v-if='sheets.length' :sheet="sheets[1]")
+      v-btn(@click='openExcel()') Open excel
+      div
+        v-btn-toggle(v-model="showSheet")
+          v-btn(v-for='sheet in sheets' :value='sheet') {{sheet}}
+      cards-view(v-if='showSheet' :sheet="showSheet")
 
    
 </template>
@@ -18,6 +21,7 @@ export default {
   data() {
     return {
       show: true,
+      showSheet: '',
       options: { locale: 'en-NL' },
       activeFilters: {},
       searchInDescription: false,
