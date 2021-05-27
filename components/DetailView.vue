@@ -1,7 +1,7 @@
 <template lang="pug">
     .cont
       v-form
-        v-jsf(v-model="milestone" :schema='schema' :options="options")
+        v-jsf(v-model="itemModel" :schema='schema' :options="options")
       v-btn.primary(@click='backToList') OK
 </template>
 
@@ -13,7 +13,7 @@ import '@koumoul/vjsf/lib/deps/third-party.js'
 import { mapState, mapGetters, mapActions, mapMutations } from 'vuex'
 export default {
   components: { VJsf },
-
+  props: { sheet: { type: String, required: true } },
   data() {
     return {
       show: true,
@@ -26,37 +26,33 @@ export default {
 
   computed: {
     // ...mapState('cyto', ['userOptions', 'metaInfo']),
-    ...mapState('api', [
-      'milestones',
-      'editMilestone',
-      'deliverables',
-      'milestoneSchema',
-      'deliverSchema',
-      'workbook',
-    ]),
+    ...mapState('api', ['editItem', 'workbook']),
+    ...mapGetters('api', ['getSheet']),
 
-    milestone: {
+    itemModel: {
       get() {
-        return this.editMilestone
+        return this.editItem
       },
       set(value) {
-        this.setMilestone(value)
+        this.setItem({ value: value, sheet: this.sheet })
       },
     },
 
     schema: function () {
-      return this.milestoneSchema
+      return this.getSheet(this.sheet + '#MD')
     },
   },
   watch: {},
-  mounted() {},
+  mounted() {
+    console.log('mounted')
+  },
   methods: {
     ...mapMutations({
-      setMilestone: 'api/setMilestone',
-      setEditMilestone: 'api/setEditMilestone',
+      setItem: 'api/setItem',
+      setEditItem: 'api/setEditItem',
     }),
     backToList: function () {
-      this.setEditMilestone(null)
+      this.setEditItem(null)
     },
   },
 }

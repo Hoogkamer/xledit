@@ -2,7 +2,7 @@
   v-app
     v-main
       v-btn(@click='openExcel()') Open
-      cards-view(v-if='milestones.length')
+      cards-view(v-if='sheets.length' :sheet="sheets[1]")
 
    
 </template>
@@ -27,7 +27,7 @@ export default {
 
   computed: {
     // ...mapState('cyto', ['userOptions', 'metaInfo']),
-    ...mapState('api', ['milestones', 'editMilestone']),
+    ...mapState('api', ['sheets']),
   },
   mounted() {},
   methods: {

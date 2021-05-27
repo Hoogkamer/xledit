@@ -1,7 +1,8 @@
 <template lang="pug">
     div
+      h1 {{sheet}}
       .filters
-        .filter(v-for = 'filter in milestoneFilters')
+        .filter(v-for = 'filter in itemFilters')
           v-select( :items="filter.values" :menu-props="{ maxHeight: '400' }" :label="filter.name" @change="updateFilterValue(filter.name, $event)"  multiple)
       .search
         v-row
@@ -10,15 +11,15 @@
           v-col
             v-switch(v-model='searchInDescription' label='In discription')
           
-      .card(v-for="milestoneCard in allMilestones" @click='doEditMilestone(milestoneCard)') 
-        .name {{milestoneCard.cardInfo.name}}
-        .desc {{milestoneCard.cardInfo.description}}
+      .card(v-for="itemCard in allItems" @click='doEditItem(itemCard)') 
+        .name {{itemCard.cardInfo.name}}
+        .desc {{itemCard.cardInfo.description}}
         hr
-        .infor(v-for="infoItem in milestoneCard.cardInfo.infos")
+        .infor(v-for="infoItem in itemCard.cardInfo.infos")
           .item1(:title='infoItem.title') {{infoItem.val}}
-      v-dialog(v-model='showModel' v-if="editMilestone")
+      v-dialog(v-model='showModel' v-if="editItem")
         v-card
-          detail-view
+          detail-view(:sheet="sheet")
 </template>
 
 <script>
@@ -30,7 +31,7 @@ import DetailView from '@/components/DetailView'
 import { mapState, mapGetters, mapActions, mapMutations } from 'vuex'
 export default {
   components: { VJsf, DetailView },
-
+  props: { sheet: { type: String, required: true } },
   data() {
     return {
       show: true,
@@ -44,35 +45,33 @@ export default {
 
   computed: {
     // ...mapState('cyto', ['userOptions', 'metaInfo']),
-    ...mapState('api', [
-      'milestones',
-      'deliverables',
-      'editMilestone',
-      'milestoneSchema',
-      'deliverSchema',
-      'workbook',
-    ]),
-    milestoneFilters: function () {
+    ...mapState('api', ['editItem', 'workbook']),
+    ...mapGetters('api', ['getSheet']),
+    itemFilters: function () {
       let filters = []
 
-      this.workbook.miletypes
+      this.workbook[this.sheet + '#MD']
         .filter((mt) => mt['y-filter'])
         .forEach((filter) => {
           filters.push({
             name: filter['name'],
             values: [
               ...new Set(
-                this.milestones.map((item) => item[filter['name']])
+                this.getSheet(this.sheet).map((item) =>
+                  item[filter['name']] !== 0
+                    ? item[filter['name']] || ''
+                    : 0
+                )
               ),
             ],
           })
         })
+      console.log(filters)
 
       return filters
     },
-    allMilestones: function () {
-      console.log('..........', this.milestones, this.activeFilters)
-      let list = this.milestones
+    allItems: function () {
+      let list = this.getSheet(this.sheet)
 
       Object.keys(this.activeFilters).forEach((key) => {
         console.log(key, this.activeFilters[key])
@@ -98,14 +97,16 @@ export default {
       return list
     },
     schema: function () {
-      return this.milestoneSchema
+      return this.getSheet(this.sheet + '#MD')
     },
   },
   watch: {},
-  mounted() {},
+  mounted() {
+    console.log(this.getSheet(this.sheet))
+  },
   methods: {
     ...mapMutations({
-      setEditMilestone: 'api/setEditMilestone',
+      setEditItem: 'api/setEditItem',
     }),
     updateFilterValue: function (name, value) {
       delete this.activeFilters[name]
@@ -115,8 +116,8 @@ export default {
       this.activeFilters = {}
       this.search = ''
     },
-    doEditMilestone: function (val) {
-      this.setEditMilestone(val)
+    doEditItem: function (val) {
+      this.setEditItem(val)
     },
   },
 }
@@ -124,7 +125,6 @@ export default {
 <style scoped>
 .card {
   width: 500px;
-  height: 150px;
   border: 1px solid grey;
   padding: 10px;
   margin: 5px;
