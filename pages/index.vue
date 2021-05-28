@@ -3,9 +3,9 @@
     v-main
       v-btn(@click='openExcel()') Open excel
       div
-        v-btn-toggle(v-model="showSheet")
-          v-btn(v-for='sheet in sheets' :value='sheet') {{sheet}}
-      cards-view(v-if='showSheet' :sheet="showSheet")
+        v-btn-toggle(v-model="showSheet" )
+          v-btn(v-for='sheet in sheets' :value='sheet' @click='hasParent=null') {{sheet}}
+      cards-view(v-if='showSheet' :sheet="showSheet" @showParent="showParent" :hasParent='hasParent')
 
    
 </template>
@@ -26,6 +26,7 @@ export default {
       activeFilters: {},
       searchInDescription: false,
       search: '',
+      hasParent: null,
     }
   },
 
@@ -38,6 +39,11 @@ export default {
     ...mapActions({
       getExcel: 'api/getExcel',
     }),
+    showParent: function (e) {
+      console.log(e)
+      this.hasParent = e
+      if (e) this.showSheet = e.sheet
+    },
 
     openExcel: function () {
       this.getExcel()

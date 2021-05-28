@@ -19,6 +19,22 @@ const api = {
       importExcel(null).then((workbook) => {
         state.workbook = workbook
         var sheets = Object.keys(workbook)
+        var nsheet, ncol
+        sheets
+          .filter((s) => s.indexOf('#MD') > 0)
+          .forEach((sheet) => {
+            workbook[sheet].forEach((col) => {
+              if (col['y-parent']) {
+                nsheet = col['y-parent'].split('/')[0]
+                ncol = col['y-parent'].split('/')[1]
+                workbook[nsheet + '#MD'].find(
+                  (col) => col.name === ncol
+                )['y-child'] =
+                  sheet.split('#')[0] + '/' + col.name + '/' + ncol
+              }
+            })
+          })
+        console.log(workbook)
         sheets.forEach((sheet) => {
           if (sheet.indexOf('#MD') == -1) {
             processData(state, workbook, sheet)
@@ -28,7 +44,6 @@ const api = {
         })
       })
     },
-    writeCollection() {},
   },
   mutations: {
     setItem: function (state, { value, sheet }) {
@@ -53,6 +68,13 @@ function getItemCard(ms, types) {
       if (card.infos)
         card.infos.push({ val: ms[mt.name], title: mt.name })
       else card.infos = [{ val: ms[mt.name], title: mt.name }]
+    }
+    if (mt['y-child']) {
+      card.child = {
+        sheet: mt['y-child'].split('/')[0],
+        col: mt['y-child'].split('/')[1],
+        val: ms[mt['y-child'].split('/')[2]],
+      }
     }
   })
   return card

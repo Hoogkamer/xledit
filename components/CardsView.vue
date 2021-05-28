@@ -1,6 +1,11 @@
 <template lang="pug">
     div
-      h1 {{sheet}}
+
+      .parentInfo(v-if='hasParent')
+        h3 Items of parent:
+        .parentname {{hasParent.itemCard.cardInfo.name}}
+        .parentdescr {{hasParent.itemCard.cardInfo.description}}
+        v-btn(@click='gotoSheet(null)' small) Remove Filter
       .filters
         .filter(v-for = 'filter in itemFilters')
           v-select( :items="filter.values" :menu-props="{ maxHeight: '400' }" :label="filter.name" @change="updateFilterValue(filter.name, $event)"  multiple)
@@ -17,6 +22,8 @@
         hr
         .infor(v-for="infoItem in itemCard.cardInfo.infos")
           .item1(:title='infoItem.title') {{infoItem.val}}
+        .child(v-if='itemCard.cardInfo.child')
+          v-icon.children(x-small @click.stop='gotoSheet({...itemCard.cardInfo.child, itemCard})' title="View children") mdi-file-tree-outline
       v-dialog(v-model='showModel' v-if="editItem")
         v-card
           detail-view(:sheet="sheet")
@@ -31,7 +38,10 @@ import DetailView from '@/components/DetailView'
 import { mapState, mapGetters, mapActions, mapMutations } from 'vuex'
 export default {
   components: { VJsf, DetailView },
-  props: { sheet: { type: String, required: true } },
+  props: {
+    sheet: { type: String, required: true },
+    hasParent: { type: Object, default: null },
+  },
   data() {
     return {
       show: true,
@@ -71,6 +81,12 @@ export default {
     },
     allItems: function () {
       let list = this.getSheet(this.sheet)
+      console.log('===', this.hasParent, list)
+      if (this.hasParent) {
+        list = list.filter(
+          (l) => l[this.hasParent.col] === this.hasParent.val
+        )
+      }
 
       Object.keys(this.activeFilters).forEach((key) => {
         if (this.activeFilters[key].length) {
@@ -115,6 +131,10 @@ export default {
     doEditItem: function (val) {
       this.setEditItem(val)
     },
+    gotoSheet(val) {
+      this.$emit('showParent', val)
+      console.log(val)
+    },
   },
 }
 </script>
@@ -126,6 +146,7 @@ export default {
   margin: 5px;
   display: inline-block;
   cursor: pointer;
+  position: relative;
 }
 .card:hover {
   background-color: aliceblue;
@@ -146,8 +167,6 @@ export default {
 .infor {
   font-size: 12px;
   display: inline-block;
-  width: 230px;
-  white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
@@ -161,5 +180,29 @@ export default {
 }
 .search {
   max-width: 600px;
+}
+.child {
+  position: absolute;
+  bottom: 0px;
+  right: 0px;
+}
+.children {
+  font-size: 24px !important;
+  color: black;
+}
+.children:hover {
+  color: blue;
+}
+.parentname {
+  font-weight: 500;
+}
+.parentdescr {
+  font-size: 12px;
+  padding: 0px 0px 10px 0px;
+}
+.parentInfo {
+  margin: 20px 0px;
+  border: 1px solid grey;
+  padding: 10px;
 }
 </style>

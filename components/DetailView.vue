@@ -1,6 +1,7 @@
 <template lang="pug">
     .cont
       v-form
+        h3 {{sheet}}
         v-jsf(v-model="itemModel" :schema='schema' :options="options" v-if="schema")
       v-btn.primary(@click='backToList') OK
 </template>
@@ -45,9 +46,7 @@ export default {
     },
   },
   watch: {},
-  mounted() {
-    console.log(this.itemModel, this.schema, this.options)
-  },
+  mounted() {},
   methods: {
     ...mapMutations({
       setItem: 'api/setItem',
