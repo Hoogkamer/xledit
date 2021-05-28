@@ -16,7 +16,6 @@ function importExcel(that) {
           var result = {}
 
           workbook.SheetNames.forEach((sheet) => {
-            console.log(sheet)
             result[sheet] = XLSX.utils.sheet_to_json(
               workbook.Sheets[sheet],
               {
@@ -24,7 +23,6 @@ function importExcel(that) {
                 range: 1,
               }
             )
-            console.log(result)
           })
 
           resolve(result)
@@ -32,7 +30,6 @@ function importExcel(that) {
         reader.readAsBinaryString(blob)
       })
       .catch((e) => {
-        console.log(e)
         // this.errors.push(e)
       })
   })

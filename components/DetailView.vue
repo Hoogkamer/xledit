@@ -1,13 +1,15 @@
 <template lang="pug">
     .cont
       v-form
-        v-jsf(v-model="itemModel" :schema='schema' :options="options")
+        v-jsf(v-model="itemModel" :schema='schema' :options="options" v-if="schema")
       v-btn.primary(@click='backToList') OK
 </template>
 
 <script>
-import VJsf from '@koumoul/vjsf'
-import '@koumoul/vjsf/dist/main.css'
+import VJsf from '@koumoul/vjsf/lib/VJsf.js'
+import '@koumoul/vjsf/lib/VJsf.css'
+// load third-party dependencies (markdown-it, vuedraggable)
+// you can also load them separately based on your needs
 import '@koumoul/vjsf/lib/deps/third-party.js'
 
 import { mapState, mapGetters, mapActions, mapMutations } from 'vuex'
@@ -44,7 +46,7 @@ export default {
   },
   watch: {},
   mounted() {
-    console.log('mounted')
+    console.log(this.itemModel, this.schema, this.options)
   },
   methods: {
     ...mapMutations({

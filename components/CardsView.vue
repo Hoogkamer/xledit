@@ -66,7 +66,6 @@ export default {
             ],
           })
         })
-      console.log(filters)
 
       return filters
     },
@@ -74,7 +73,6 @@ export default {
       let list = this.getSheet(this.sheet)
 
       Object.keys(this.activeFilters).forEach((key) => {
-        console.log(key, this.activeFilters[key])
         if (this.activeFilters[key].length) {
           list = list.filter((l) =>
             this.activeFilters[key].includes(l[key])
@@ -101,9 +99,7 @@ export default {
     },
   },
   watch: {},
-  mounted() {
-    console.log(this.getSheet(this.sheet))
-  },
+  mounted() {},
   methods: {
     ...mapMutations({
       setEditItem: 'api/setEditItem',

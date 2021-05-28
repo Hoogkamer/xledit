@@ -3,12 +3,12 @@ import Vue from 'vue'
 
 const api = {
   namespaced: true,
-  state: {
+  state: () => ({
     types: ['term', 'property', 'group', 'label'],
     workbook: {},
     editItem: null,
     sheets: [],
-  },
+  }),
   getters: {
     getSheet: (state, getters) => (sheet) => {
       return state[sheet]
@@ -20,9 +20,7 @@ const api = {
         state.workbook = workbook
         var sheets = Object.keys(workbook)
         sheets.forEach((sheet) => {
-          console.log(sheet)
           if (sheet.indexOf('#MD') == -1) {
-            console.log('ja')
             processData(state, workbook, sheet)
           } else {
             processMetadata(state, workbook, sheet)
@@ -34,9 +32,7 @@ const api = {
   },
   mutations: {
     setItem: function (state, { value, sheet }) {
-      console.log(sheet, value)
       let index = state[sheet].findIndex((e) => e.__id === value.__id)
-      console.log(index, value)
 
       Vue.set(state[sheet], index, {
         ...value,
@@ -44,7 +40,6 @@ const api = {
       })
     },
     setEditItem: function (state, value) {
-      console.log('edititem', value)
       state.editItem = value
     },
   },
@@ -84,12 +79,10 @@ function guid() {
   )
 }
 function processData(state, workbook, sheet) {
-  console.log('jaja')
   Vue.set(state, sheet, workbook[sheet])
   state.sheets.push(sheet)
 
   state[sheet].forEach((ms) => {
-    console.log('[[[', ms)
     workbook[sheet + '#MD'].forEach((mt) => {
       if (mt.format === 'date') {
         let dt = ms[mt.name].split('/')
@@ -103,7 +96,6 @@ function processData(state, workbook, sheet) {
       getItemCard(ms, state.workbook[sheet + '#MD'])
     )
   })
-  console.log(state[sheet], state.sheets)
 }
 function processMetadata(state, workbook, sheet) {
   let obj = {}
