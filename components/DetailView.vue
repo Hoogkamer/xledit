@@ -20,7 +20,15 @@ export default {
   data() {
     return {
       show: true,
-      options: { locale: 'en-NL' },
+      options: {
+        locale: 'en-NL',
+        formats: {
+          date: function (e, t) {
+            var n = new Date(e)
+            return n.toLocaleDateString(t)
+          },
+        },
+      },
       activeFilters: {},
       searchInDescription: false,
       search: '',
@@ -37,7 +45,8 @@ export default {
         return this.editItem
       },
       set(value) {
-        this.setItem({ value: value, sheet: this.sheet })
+        //this.setItem({ value: value, sheet: this.sheet })
+        this.setEditItem(value)
       },
     },
 
@@ -53,6 +62,7 @@ export default {
       setEditItem: 'api/setEditItem',
     }),
     backToList: function () {
+      this.setItem({ value: this.editItem, sheet: this.sheet })
       this.setEditItem(null)
     },
   },

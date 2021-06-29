@@ -12,7 +12,10 @@ function importExcel(that) {
         var reader = new FileReader()
         reader.onload = function (e) {
           var data = e.target.result
-          var workbook = XLSX.read(data, { type: 'binary' })
+          var workbook = XLSX.read(data, {
+            type: 'binary',
+            cellDates: true,
+          })
           var result = {}
 
           workbook.SheetNames.forEach((sheet) => {

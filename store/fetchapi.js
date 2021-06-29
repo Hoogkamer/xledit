@@ -8,6 +8,7 @@ const api = {
     workbook: {},
     editItem: null,
     sheets: [],
+    Deliverables: [],
   }),
   getters: {
     getSheet: (state, getters) => (sheet) => {
@@ -48,11 +49,15 @@ const api = {
   mutations: {
     setItem: function (state, { value, sheet }) {
       let index = state[sheet].findIndex((e) => e.__id === value.__id)
-
-      Vue.set(state[sheet], index, {
+      console.log('SSSeet', value, index)
+      let newob = {
         ...value,
         cardInfo: getItemCard(value, state.workbook[sheet + '#MD']),
-      })
+      }
+
+      Vue.set(state[sheet], index, newob)
+      // state.editItem = state[sheet][index]
+      // console.log(state[sheet])
     },
     setEditItem: function (state, value) {
       state.editItem = value
@@ -107,10 +112,20 @@ function processData(state, workbook, sheet) {
   state[sheet].forEach((ms) => {
     workbook[sheet + '#MD'].forEach((mt) => {
       if (mt.format === 'date') {
-        let dt = ms[mt.name].split('/')
-        ms[mt.name] = dt[2] + '-' + dt[0] + '-' + dt[1]
+        if (typeof ms[mt.name].getMonth !== 'function') {
+          let dt = ms[mt.name].split('/')
+          ms[mt.name] = dt[2] + '-' + dt[0] + '-' + dt[1]
+        } else {
+          ms[mt.name] =
+            ms[mt.name].getFullYear() +
+            '-' +
+            (ms[mt.name].getMonth() + 1) +
+            '-' +
+            (ms[mt.name].getDate() + 1)
+        }
       }
-      ms.__id = guid()
+
+      Vue.set(ms, '__id ', guid())
     })
     Vue.set(
       ms,

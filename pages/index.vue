@@ -22,7 +22,7 @@ export default {
     return {
       show: true,
       showSheet: '',
-      options: { locale: 'en-NL' },
+
       activeFilters: {},
       searchInDescription: false,
       search: '',
