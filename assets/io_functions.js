@@ -16,25 +16,44 @@ function importExcel(that) {
             type: 'binary',
             cellDates: true,
           })
-          var result = {}
+          var sheetDatas = []
 
           workbook.SheetNames.forEach((sheet) => {
-            result[sheet] = XLSX.utils.sheet_to_json(
+            let sheetData = XLSX.utils.sheet_to_json(
               workbook.Sheets[sheet],
               {
                 defval: '',
-                range: 1,
+                range: 0,
               }
             )
+
+            sheetDatas.push({
+              name: sheet,
+              data: sheetData,
+              metaData: getSheetMetadata(Object.keys(sheetData[0])),
+            })
           })
 
-          resolve(result)
+          resolve(sheetDatas)
         }
         reader.readAsBinaryString(blob)
       })
       .catch((e) => {
         // this.errors.push(e)
       })
+  })
+}
+function getSheetMetadata(columns) {
+  return columns.map((c, i) => {
+    return {
+      name: c,
+      type: 'string',
+      width: 6,
+      filter: false,
+      cardField: 'none',
+      parent: 'none',
+      order: i,
+    }
   })
 }
 

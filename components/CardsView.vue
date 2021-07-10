@@ -89,7 +89,6 @@ export default {
     },
     allItems: function () {
       let list = this.getSheet(this.sheet)
-      console.log('===', this.hasParent, list)
       if (this.hasParent) {
         list = list.filter(
           (l) => l[this.hasParent.col] === this.hasParent.val

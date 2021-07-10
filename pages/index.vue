@@ -2,6 +2,8 @@
   v-app
     v-main
       v-btn(@click='openExcel()') Open excel
+      v-btn(v-if='workbook.length' @click='editMetadata=true') Define columns
+      edit-metadata(v-if='editMetadata')
       div
         v-btn-toggle(v-model="showSheet" )
           v-btn(v-for='sheet in sheets' :value='sheet' @click='hasParent=null') {{sheet}}
@@ -13,16 +15,17 @@
 <script>
 import CardsView from '@/components/CardsView'
 import DetailView from '@/components/DetailView'
+import EditMetadata from '@/components/EditMetadata'
 
 import { mapState, mapGetters, mapActions, mapMutations } from 'vuex'
 export default {
-  components: { CardsView, DetailView },
+  components: { CardsView, DetailView, EditMetadata },
 
   data() {
     return {
       show: true,
       showSheet: '',
-
+      editMetadata: false,
       activeFilters: {},
       searchInDescription: false,
       search: '',
@@ -33,6 +36,7 @@ export default {
   computed: {
     // ...mapState('cyto', ['userOptions', 'metaInfo']),
     ...mapState('api', ['sheets']),
+    ...mapGetters('api', ['workbook']),
   },
   mounted() {},
   methods: {

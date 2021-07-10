@@ -5,7 +5,7 @@ const api = {
   namespaced: true,
   state: () => ({
     types: ['term', 'property', 'group', 'label'],
-    workbook: {},
+    workbook: [],
     editItem: null,
     sheets: [],
     Deliverables: [],
@@ -14,22 +14,26 @@ const api = {
     getSheet: (state, getters) => (sheet) => {
       return state[sheet]
     },
+    workbook: (state) => state.workbook,
   },
   actions: {
     getExcel: function ({ state, commit, dispatch, getters }) {
       importExcel(null).then((workbook) => {
+        console.log(workbook)
         state.workbook = workbook
-        var sheets = Object.keys(workbook)
+        return
+        let sheets = Object.keys(workbook)
         var nsheet, ncol
+
         sheets
           .filter((s) => s.indexOf('#MD') > 0)
           .forEach((sheet) => {
-            workbook[sheet].forEach((col) => {
+            workbook[sheet].data.forEach((col) => {
               if (col['y-parent']) {
                 nsheet = col['y-parent'].split('/')[0]
                 ncol = col['y-parent'].split('/')[1]
-                workbook[nsheet + '#MD'].find(
-                  (col) => col.name === ncol
+                workbook[nsheet + '#MD'].data.find(
+                  (col) => col.name === ncolsheets
                 )['y-child'] =
                   sheet.split('#')[0] + '/' + col.name + '/' + ncol
               }
