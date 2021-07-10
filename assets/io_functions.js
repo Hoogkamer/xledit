@@ -47,12 +47,13 @@ function getSheetMetadata(columns) {
   return columns.map((c, i) => {
     return {
       name: c,
-      type: 'string',
+      type: 'dropdown',
       width: 6,
       filter: false,
       cardField: 'none',
       parent: 'none',
       order: i,
+      lookup: ['car', 'house', 'garden'],
     }
   })
 }
