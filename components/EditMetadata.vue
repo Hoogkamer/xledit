@@ -10,9 +10,18 @@
           table
             draggable(v-model="sheet.metaData" tag='tbody')
               tr(v-for="(col, a) in sheet.metaData" :key="a")
-                td {{col.name}}
+                td
+                  .colname
+                    table
+                      tr
+                        td
+                          v-icon.dragicon mdi-drag
+                        td
+                          .colnm {{col.name}}
                 td  
                   v-select(:items="types" label="Type" dense v-model="col.type")
+                td
+                  v-icon.icon(v-if="col.type === 'dropdown'" title='edit dropdown list' @click='lookupEditColumn = col') mdi-playlist-edit
                 td  
                   v-select(:items="widths" label="Width" dense v-model="col.width")
                 td  
@@ -21,11 +30,18 @@
                   v-select(:items="cardFields" label="CardField" dense v-model="col.cardField")
                 td
                   v-select(:items="allColumns" label="Parent" dense v-model='col.parent')
+    v-dialog(v-if='lookupEditColumn'  v-model="lookupEditColumn" max-width="800px" persistent)
+      v-card
+        
+        v-card-text
+          v-icon.close(@click="lookupEditColumn=null") mdi-close
+          h1 {{lookupEditColumn.name}}
+          table
+            tr(v-for='(dropdownValue,i) in lookupEditColumn.lookup' :key='i')
+              td 
+                input(v-model = "lookupEditColumn.lookup[i]")
 
-      
-
-
-   
+    
 </template>
 
 <script>
@@ -37,7 +53,7 @@ export default {
 
   data() {
     return {
-      show: true,
+      lookupEditColumn: null,
       showSheet: '',
       editMetadata: false,
       activeFilters: {},
@@ -45,7 +61,7 @@ export default {
       search: '',
       hasParent: null,
       panel: [0],
-      types: ['string', 'textarea', 'integer', 'date'],
+      types: ['string', 'textarea', 'integer', 'date', 'dropdown'],
       widths: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
       filter: [true, false],
       cardFields: ['none', 'name', 'description', 'info'],
@@ -86,4 +102,25 @@ export default {
   },
 }
 </script>
-<style scoped></style>
+<style scoped>
+.icon {
+  cursor: pointer;
+  color: blue;
+}
+.dragicon {
+  color: white;
+}
+.colnm {
+  display: inline-block;
+}
+.colname {
+  color: white;
+  background-color: grey;
+  padding: 5px;
+  height: 100%;
+}
+.close {
+  float: right;
+  padding: 5px;
+}
+</style>
