@@ -1,8 +1,40 @@
-import {
-  fileOpen /*directoryOpen, fileSave*/,
-} from 'browser-fs-access'
+import { fileOpen, fileSave } from 'browser-fs-access'
 import XLSX from 'xlsx'
 var tab1 = 'test'
+function prepareExport(sheet) {
+  sheet.metaData.forEach((col) => {
+    col.lookup = col.lookup.join(' _,_ ')
+  })
+  return sheet
+}
+function exportExcel(workbook) {
+  var wb = XLSX.utils.book_new()
+
+  workbook.forEach((sheet) => {
+    let exportSheet = prepareExport(sheet)
+    XLSX.utils.book_append_sheet(
+      wb,
+      XLSX.utils.json_to_sheet(exportSheet.data),
+      sheet.name
+    )
+    XLSX.utils.book_append_sheet(
+      wb,
+      XLSX.utils.json_to_sheet(exportSheet.metaData),
+      sheet.name + '#MD'
+    )
+  })
+
+  var wbout = XLSX.write(wb, { type: 'array', bookType: 'xlsx' })
+  fileSave(
+    new Blob([wbout], { type: 'application/xlsx' }),
+    {
+      fileName: 'xledit.xlsx',
+      description: 'xledit',
+      extensions: ['.xlsx'],
+    },
+    window.openBlob ? window.openBlob.handle : null
+  )
+}
 
 function importExcel(that) {
   return new Promise((resolve, reject) => {
@@ -58,4 +90,4 @@ function getSheetMetadata(columns) {
   })
 }
 
-export { importExcel }
+export { importExcel, exportExcel }
