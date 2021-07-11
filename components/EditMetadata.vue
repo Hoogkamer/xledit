@@ -1,8 +1,7 @@
 <template lang="pug">
   div
     h1 edit metadata
-    div(v-for="sheet in workbook")
-      span(v-for='col in sheet.metaData') {{col.name}}
+    v-btn(@click='$emit("close")') Close
     v-expansion-panels(v-model='panel' multiple)
       v-expansion-panel(v-for="(sheet, i) in workbook" :key="i" )
         v-expansion-panel-header {{sheet.name}}

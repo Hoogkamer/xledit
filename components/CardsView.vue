@@ -14,16 +14,16 @@
           v-col
             v-text-field(v-model='search' label='Search' clearable) 
           v-col
-            v-switch(v-model='searchInDescription' label='In discription')
+            v-switch(v-model='searchInDescription' label='In description')
           
       .card(v-for="itemCard in allItems" @click='doEditItem(itemCard)') 
-        .name {{itemCard.cardInfo.name}}
-        .desc {{itemCard.cardInfo.description}}
+        .name {{itemCard[sheet.metaData.find(a => a.cardField === 'name').name]}}
+        .desc {{itemCard[sheet.metaData.find(a => a.cardField === 'description').name]}}
         hr
-        .infor(v-for="infoItem in itemCard.cardInfo.infos")
-          .item1(:title='infoItem.title') {{infoItem.val}}
-        .child(v-if='itemCard.cardInfo.child')
-          v-icon.children(x-small @click.stop='gotoSheet({...itemCard.cardInfo.child, itemCard})' title="View children") mdi-file-tree-outline
+        .infor(v-for="infoItem in sheet.metaData.filter(a => a.cardField==='info')")
+          .item1(:title='infoItem.name') {{itemCard[infoItem.name]}}
+        //- .child(v-if='itemCard.cardInfo.child')
+        //-   v-icon.children(x-small @click.stop='gotoSheet({...itemCard.cardInfo.child, itemCard})' title="View children") mdi-file-tree-outline
       v-dialog(v-model='showModel' v-if="editItem")
         v-card
           detail-view(:sheet="sheet")
@@ -39,7 +39,7 @@ import { mapState, mapGetters, mapActions, mapMutations } from 'vuex'
 export default {
   components: { VJsf, DetailView },
   props: {
-    sheet: { type: String, required: true },
+    sheet: { type: Object, required: true },
     hasParent: { type: Object, default: null },
   },
   data() {
@@ -68,14 +68,14 @@ export default {
     itemFilters: function () {
       let filters = []
 
-      this.workbook[this.sheet + '#MD']
-        .filter((mt) => mt['y-filter'])
+      this.sheet.metaData
+        .filter((c) => c.filter)
         .forEach((filter) => {
           filters.push({
             name: filter['name'],
             values: [
               ...new Set(
-                this.getSheet(this.sheet).map((item) =>
+                this.sheet.data.map((item) =>
                   item[filter['name']] !== 0
                     ? item[filter['name']] || ''
                     : 0
@@ -84,11 +84,12 @@ export default {
             ],
           })
         })
-
+      console.log('ffff', filters)
       return filters
     },
     allItems: function () {
-      let list = this.getSheet(this.sheet)
+      let list = this.sheet.data
+
       if (this.hasParent) {
         list = list.filter(
           (l) => l[this.hasParent.col] === this.hasParent.val
@@ -105,23 +106,30 @@ export default {
       if (this.search) {
         list = list.filter(
           (l) =>
-            l.cardInfo.name
+            l[
+              this.sheet.metaData.find((a) => a.cardField === 'name')
+                .name
+            ]
               .toLowerCase()
               .indexOf(this.search.toLowerCase()) >= 0 ||
             (this.searchInDescription &&
-              l.cardInfo.description
+              l[
+                this.sheet.metaData.find(
+                  (a) => a.cardField === 'description'
+                ).name
+              ]
                 .toLowerCase()
                 .indexOf(this.search.toLowerCase()) >= 0)
         )
       }
+      console.log(list)
       return list
-    },
-    schema: function () {
-      return this.getSheet(this.sheet + '#MD')
     },
   },
   watch: {},
-  mounted() {},
+  mounted() {
+    console.log('oooo', this.sheet)
+  },
   methods: {
     ...mapMutations({
       setEditItem: 'api/setEditItem',
