@@ -2,10 +2,11 @@ import { fileOpen, fileSave } from 'browser-fs-access'
 import XLSX from 'xlsx'
 var tab1 = 'test'
 function prepareExport(sheet) {
-  sheet.metaData.forEach((col) => {
+  let sheetChanged = JSON.parse(JSON.stringify(sheet))
+  sheetChanged.metaData.forEach((col) => {
     col.lookup = col.lookup.join(' _,_ ')
   })
-  return sheet
+  return sheetChanged
 }
 function exportExcel(workbook) {
   var wb = XLSX.utils.book_new()
@@ -50,9 +51,18 @@ function importExcel(that) {
           })
           var sheetDatas = []
 
-          workbook.SheetNames.forEach((sheet) => {
+          workbook.SheetNames.filter(
+            (s) => s.indexOf('#MD') === -1
+          ).forEach((sheet) => {
             let sheetData = XLSX.utils.sheet_to_json(
               workbook.Sheets[sheet],
+              {
+                defval: '',
+                range: 0,
+              }
+            )
+            let sheetMetadata = XLSX.utils.sheet_to_json(
+              workbook.Sheets[sheet + '#MD'],
               {
                 defval: '',
                 range: 0,
@@ -62,7 +72,7 @@ function importExcel(that) {
             sheetDatas.push({
               name: sheet,
               data: sheetData,
-              metaData: getSheetMetadata(Object.keys(sheetData[0])),
+              metaData: getSheetMetadata(sheetData, sheetMetadata),
             })
           })
 
@@ -75,19 +85,30 @@ function importExcel(that) {
       })
   })
 }
-function getSheetMetadata(columns) {
-  return columns.map((c, i) => {
-    return {
+function getSheetMetadata(data, metadata) {
+  console.log(data, metadata)
+  metadata.forEach((md, i) => {
+    md.lookup = md.lookup.split(' _,_ ')
+    md.order = i
+  })
+
+  let columns = Object.keys(data[0])
+  let retval = columns.map((c, i) => {
+    let rv = {
       name: c,
-      type: 'dropdown',
+      type: 'string',
       width: 6,
       filter: false,
       cardField: 'none',
       parent: 'none',
       order: i,
-      lookup: ['car', 'house', 'garden'],
+      lookup: [],
     }
+    return { ...rv, ...metadata.find((nm) => nm.name === c) }
   })
+  console.log('md', metadata, 'rv', retval)
+  retval.sort((a, b) => a.order - b.order)
+  return retval
 }
 
 export { importExcel, exportExcel }

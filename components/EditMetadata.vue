@@ -83,6 +83,7 @@ export default {
     allColumns: function () {
       let cols = []
       this.workbook.forEach((sheet) => {
+        console.log(sheet)
         sheet.metaData.forEach((col) => {
           cols.push(sheet.name + '/' + col.name)
         })
