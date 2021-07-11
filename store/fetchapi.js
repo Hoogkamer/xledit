@@ -1,4 +1,4 @@
-import { importExcel } from '@/assets/io_functions'
+import { importExcel, exportExcel } from '@/assets/io_functions'
 import Vue from 'vue'
 
 const api = {
@@ -17,6 +17,9 @@ const api = {
     workbook: (state) => state.workbook,
   },
   actions: {
+    putExcel: function ({ state, commit, dispatch, getters }) {
+      exportExcel(state.workbook)
+    },
     getExcel: function ({ state, commit, dispatch, getters }) {
       importExcel(null).then((workbook) => {
         console.log(workbook)

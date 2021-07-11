@@ -33,13 +33,27 @@
     v-dialog(v-if='lookupEditColumn'  v-model="lookupEditColumn" max-width="800px" persistent)
       v-card
         
-        v-card-text
-          v-icon.close(@click="lookupEditColumn=null") mdi-close
-          h1 {{lookupEditColumn.name}}
+        .card-content
+
+          v-icon.close(@click="lookupEditColumn=null;newValue=null") mdi-close
+          h2 {{lookupEditColumn.name}}
           table
-            tr(v-for='(dropdownValue,i) in lookupEditColumn.lookup' :key='i')
-              td 
-                input(v-model = "lookupEditColumn.lookup[i]")
+            draggable(v-model="lookupEditColumn.lookup" tag='tbody')
+              tr(v-for='(dropdownValue,i) in lookupEditColumn.lookup' :key='i')
+                td
+                  v-icon.dragicon1 mdi-drag
+                td 
+                  input.inp(v-model = "lookupEditColumn.lookup[i]")
+                td
+                  v-btn(@click='lookupEditColumn.lookup.splice(i, 1)' x-small) Remove
+            tr
+              td
+              td
+                input.inp(v-model='newValue' placeholder='enter new value....')
+              td
+                v-btn(@click='lookupEditColumn.lookup.push(newValue);newValue=""' x-small) Add
+          v-btn(@click="lookupEditColumn=null;newValue=null") close
+          v-btn(@click='lookupEditColumn.lookup.sort()') Sort list
 
     
 </template>
@@ -54,12 +68,7 @@ export default {
   data() {
     return {
       lookupEditColumn: null,
-      showSheet: '',
-      editMetadata: false,
-      activeFilters: {},
-      searchInDescription: false,
-      search: '',
-      hasParent: null,
+      newValue: '',
       panel: [0],
       types: ['string', 'textarea', 'integer', 'date', 'dropdown'],
       widths: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
@@ -69,7 +78,6 @@ export default {
   },
 
   computed: {
-    // ...mapState('cyto', ['userOptions', 'metaInfo']),
     ...mapState('api', ['sheets']),
     ...mapGetters('api', ['workbook']),
     allColumns: function () {
@@ -90,12 +98,6 @@ export default {
     ...mapActions({
       getExcel: 'api/getExcel',
     }),
-    showParent: function (e) {
-      console.log(e)
-      this.hasParent = e
-      if (e) this.showSheet = e.sheet
-    },
-
     openExcel: function () {
       this.getExcel()
     },
@@ -110,6 +112,9 @@ export default {
 .dragicon {
   color: white;
 }
+.dragicon1 {
+  color: black;
+}
 .colnm {
   display: inline-block;
 }
@@ -122,5 +127,16 @@ export default {
 .close {
   float: right;
   padding: 5px;
+}
+.inp {
+  border: 1px solid grey;
+  padding: 0px 5px;
+}
+h2 {
+  padding: 10px 0px;
+}
+.card-content {
+  color: grey;
+  padding: 10px;
 }
 </style>

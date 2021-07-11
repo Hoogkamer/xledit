@@ -2,7 +2,9 @@
   v-app
     v-main
       v-btn(@click='openExcel()') Open excel
-      v-btn(v-if='workbook.length' @click='editMetadata=true') Define columns
+      template(v-if='workbook.length')
+        v-btn( @click='editMetadata=true') Define columns
+        v-btn(@click = 'saveExcel()') Save excel
       edit-metadata(v-if='editMetadata')
       div
         v-btn-toggle(v-model="showSheet" )
@@ -42,6 +44,7 @@ export default {
   methods: {
     ...mapActions({
       getExcel: 'api/getExcel',
+      putExcel: 'api/putExcel',
     }),
     showParent: function (e) {
       console.log(e)
@@ -51,6 +54,10 @@ export default {
 
     openExcel: function () {
       this.getExcel()
+    },
+    saveExcel: function () {
+      console.log(this.workbook)
+      this.putExcel()
     },
   },
 }
