@@ -1,7 +1,7 @@
 <template lang="pug">
     .cont
       v-form
-        h3 {{sheet}}
+        h3 {{sheet.name}}
         v-jsf(v-model="itemModel" :schema='schema' :options="options" v-if="schema")
       v-btn.primary(@click='backToList') OK
 </template>
@@ -39,19 +39,29 @@ export default {
     // ...mapState('cyto', ['userOptions', 'metaInfo']),
     ...mapState('api', ['editItem', 'workbook']),
     ...mapGetters('api', ['getSheet']),
-
+    schema: {
+      get() {
+        let schema = { type: 'object', properties: {} }
+        this.editItem.metaData.forEach((c) => {
+          schema.properties[c.name] = {
+            type: 'string',
+            'x-cols': c.width,
+            'x-display': c.type,
+            enum: c.lookup.length ? c.lookup : null,
+          }
+        })
+        console.log('schema', schema)
+        return schema
+      },
+    },
     itemModel: {
       get() {
-        return this.editItem
+        return this.editItem.data
       },
       set(value) {
         //this.setItem({ value: value, sheet: this.sheet })
-        this.setEditItem(value)
+        this.setEditItemData(value)
       },
-    },
-
-    schema: function () {
-      return this.getSheet(this.sheet + '#MD')
     },
   },
   watch: {},
@@ -60,6 +70,7 @@ export default {
     ...mapMutations({
       setItem: 'api/setItem',
       setEditItem: 'api/setEditItem',
+      setEditItemData: 'api/setEditItemData',
     }),
     backToList: function () {
       this.setItem({ value: this.editItem, sheet: this.sheet })

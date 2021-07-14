@@ -67,7 +67,11 @@ const api = {
       // console.log(state[sheet])
     },
     setEditItem: function (state, value) {
+      console.log('edititem', value)
       state.editItem = value
+    },
+    setEditItemData: function (state, data) {
+      state.editItem.data = data
     },
   },
 }

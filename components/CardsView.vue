@@ -16,7 +16,7 @@
           v-col
             v-switch(v-model='searchInDescription' label='In description')
           
-      .card(v-for="itemCard in allItems" @click='doEditItem(itemCard)') 
+      .card(v-for="itemCard in allItems" @click='doEditItem({data:itemCard, metaData:sheet.metaData})') 
         .name {{itemCard[sheet.metaData.find(a => a.cardField === 'name').name]}}
         .desc {{itemCard[sheet.metaData.find(a => a.cardField === 'description').name]}}
         hr

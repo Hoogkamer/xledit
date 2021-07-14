@@ -89,6 +89,7 @@ function getSheetMetadata(data, metadata) {
   console.log(data, metadata)
   metadata.forEach((md, i) => {
     md.lookup = md.lookup.split(' _,_ ')
+    if ((md.lookup.length === 1) & !md.lookup[0]) md.lookup = []
     md.order = i
   })
 
