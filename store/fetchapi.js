@@ -54,15 +54,20 @@ const api = {
     },
   },
   mutations: {
-    setItem: function (state, { value, sheet }) {
-      let index = state[sheet].findIndex((e) => e.__id === value.__id)
-      console.log('SSSeet', value, index)
-      let newob = {
-        ...value,
-        cardInfo: getItemCard(value, state.workbook[sheet + '#MD']),
-      }
+    setItem: function (state, { value, sheet, id }) {
+      console.log(state.workbook, value, sheet, id)
+      let wbSheet = state.workbook.find((x) => x.name === sheet)
+      let index = wbSheet.data.findIndex((e) => e.__id === id)
 
-      Vue.set(state[sheet], index, newob)
+      let newob = {
+        ...wbSheet.data[index],
+        ...value,
+      }
+      Vue.set(
+        state.workbook.find((x) => x.name === sheet).data,
+        index,
+        newob
+      )
       // state.editItem = state[sheet][index]
       // console.log(state[sheet])
     },
@@ -72,6 +77,7 @@ const api = {
     },
     setEditItemData: function (state, data) {
       state.editItem.data = data
+      console.log(state.editItem, state.workbook)
     },
   },
 }

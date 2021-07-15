@@ -1,8 +1,8 @@
 <template lang="pug">
     .cont
       v-form
-        h3 {{sheet.name}}
-        v-jsf(v-model="itemModel" :schema='schema' :options="options" v-if="schema")
+        h3 {{editItem.name}}
+        v-jsf(v-model="editable" :schema='schema' :options="options" v-if="schema")
       v-btn.primary(@click='backToList') OK
 </template>
 
@@ -16,10 +16,10 @@ import '@koumoul/vjsf/lib/deps/third-party.js'
 import { mapState, mapGetters, mapActions, mapMutations } from 'vuex'
 export default {
   components: { VJsf },
-  props: { sheet: { type: String, required: true } },
   data() {
     return {
       show: true,
+      editable: {},
       options: {
         locale: 'en-NL',
         formats: {
@@ -38,7 +38,6 @@ export default {
   computed: {
     // ...mapState('cyto', ['userOptions', 'metaInfo']),
     ...mapState('api', ['editItem', 'workbook']),
-    ...mapGetters('api', ['getSheet']),
     schema: {
       get() {
         let schema = { type: 'object', properties: {} }
@@ -56,16 +55,20 @@ export default {
     },
     itemModel: {
       get() {
+        console.log('++++', this.editItem.data)
         return this.editItem.data
       },
       set(value) {
         //this.setItem({ value: value, sheet: this.sheet })
+        console.log('----', value)
         this.setEditItemData(value)
       },
     },
   },
   watch: {},
-  mounted() {},
+  mounted() {
+    this.editable = this.editItem.data
+  },
   methods: {
     ...mapMutations({
       setItem: 'api/setItem',
@@ -73,7 +76,11 @@ export default {
       setEditItemData: 'api/setEditItemData',
     }),
     backToList: function () {
-      this.setItem({ value: this.editItem, sheet: this.sheet })
+      this.setItem({
+        value: this.editable,
+        sheet: this.editItem.name,
+        id: this.editItem.data.__id,
+      })
       this.setEditItem(null)
     },
   },

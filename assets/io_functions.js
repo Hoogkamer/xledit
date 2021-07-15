@@ -71,7 +71,7 @@ function importExcel(that) {
 
             sheetDatas.push({
               name: sheet,
-              data: sheetData,
+              data: getSheetData(sheetData),
               metaData: getSheetMetadata(sheetData, sheetMetadata),
             })
           })
@@ -84,6 +84,10 @@ function importExcel(that) {
         // this.errors.push(e)
       })
   })
+}
+function getSheetData(sheetData) {
+  //return sheetData
+  return sheetData.map((v, i) => ({ ...v, __id: i }))
 }
 function getSheetMetadata(data, metadata) {
   console.log(data, metadata)

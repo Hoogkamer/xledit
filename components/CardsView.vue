@@ -16,7 +16,7 @@
           v-col
             v-switch(v-model='searchInDescription' label='In description')
           
-      .card(v-for="itemCard in allItems" @click='doEditItem({data:itemCard, metaData:sheet.metaData})') 
+      .card(v-for="itemCard in allItems" @click='doEditItem({data:itemCard, metaData:sheet.metaData, name:sheet.name})') 
         .name {{itemCard[sheet.metaData.find(a => a.cardField === 'name').name]}}
         .desc {{itemCard[sheet.metaData.find(a => a.cardField === 'description').name]}}
         hr
@@ -26,7 +26,7 @@
         //-   v-icon.children(x-small @click.stop='gotoSheet({...itemCard.cardInfo.child, itemCard})' title="View children") mdi-file-tree-outline
       v-dialog(v-model='showModel' v-if="editItem")
         v-card
-          detail-view(:sheet="sheet")
+          detail-view
 </template>
 
 <script>
@@ -63,8 +63,7 @@ export default {
 
   computed: {
     // ...mapState('cyto', ['userOptions', 'metaInfo']),
-    ...mapState('api', ['editItem', 'workbook']),
-    ...mapGetters('api', ['getSheet']),
+    ...mapState('api', ['editItem']),
     itemFilters: function () {
       let filters = []
 
