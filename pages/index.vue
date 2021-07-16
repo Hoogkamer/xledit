@@ -1,14 +1,17 @@
 <template lang="pug">
   v-app
     v-main
-      v-btn(@click='openExcel()') Open excel
+      v-btn.bt(@click='openExcel()') Open excel
       template(v-if='workbook.length')
-        v-btn( @click='editMetadata=true') Define columns
-        v-btn(@click = 'saveExcel()') Save excel
+        v-btn.bt( @click='editMetadata=true') Define columns
+        v-btn.bt(@click = 'saveExcel()') Save excel
+      hr
       edit-metadata(v-if='editMetadata' @close='editMetadata=false')
       div(v-else)
+        .vspacer
+        span SHEET: 
         v-btn-toggle(v-model="showSheet" )
-          v-btn(v-for='sheet in workbook' :value='sheet' @click='hasParent=null') {{sheet.name}}
+          v-btn(x-small v-for='sheet in workbook' :value='sheet' @click='hasParent=null') {{sheet.name}}
       cards-view(v-if='showSheet' :sheet="showSheet" @showParent="showParent" :hasParent='hasParent')
 
    
@@ -63,4 +66,11 @@ export default {
   },
 }
 </script>
-<style scoped></style>
+<style scoped>
+.bt {
+  margin: 5px;
+}
+.vspacer {
+  height: 15px;
+}
+</style>

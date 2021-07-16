@@ -212,16 +212,17 @@ export default {
 .card {
   width: 500px;
 
-  border: 1px solid grey;
+  border: 1px solid lightgrey;
   padding: 10px;
   margin: 5px;
   display: inline-block;
   cursor: pointer;
   position: relative;
   vertical-align: top;
+  border-radius: 10px;
 }
 .card:hover {
-  background-color: aliceblue;
+  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
 }
 .name {
   font-weight: 600;
