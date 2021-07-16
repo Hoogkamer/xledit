@@ -1,7 +1,7 @@
 <template lang="pug">
   div
     h1 edit metadata
-    v-btn(@click='$emit("close")') Close
+    v-btn(@click='fixDates();$emit("close")') Close
     v-expansion-panels(v-model='panel' multiple)
       v-expansion-panel(v-for="(sheet, i) in workbook" :key="i" )
         v-expansion-panel-header {{sheet.name}}
@@ -51,7 +51,7 @@
                 input.inp(v-model='newValue' placeholder='enter new value....')
               td
                 v-btn(@click='lookupEditColumn.lookup.push(newValue);newValue=""' x-small) Add
-          v-btn(@click="lookupEditColumn=null;newValue=null") close
+          v-btn(@click="closeDialog()") close
           v-btn(@click='lookupEditColumn.lookup.sort()') Sort list
 
     
@@ -97,7 +97,12 @@ export default {
   methods: {
     ...mapActions({
       getExcel: 'api/getExcel',
+      fixDates: 'api/fixDates',
     }),
+    closeDialog: function () {
+      this.lookupEditColumn = null
+      this.newValue = null
+    },
     openExcel: function () {
       this.getExcel()
     },

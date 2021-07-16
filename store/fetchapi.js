@@ -1,4 +1,5 @@
 import { importExcel, exportExcel } from '@/assets/io_functions'
+
 import Vue from 'vue'
 
 const api = {
@@ -20,10 +21,46 @@ const api = {
     putExcel: function ({ state, commit, dispatch, getters }) {
       exportExcel(state.workbook)
     },
+    fixDates: function ({ state }) {
+      state.workbook.forEach((wb) => {
+        console.log(wb)
+        if (wb.metaData) {
+          let dateColumns = wb.metaData.filter(
+            (c) => c.type === 'date'
+          )
+          console.log('datecolumns', dateColumns)
+          dateColumns.forEach((dc) => {
+            wb.data.forEach((row) => {
+              row[dc.name] = col2date(row[dc.name])
+            })
+          })
+        }
+      })
+      function col2date(col) {
+        let retval = ''
+        if (typeof col.getMonth === 'function') {
+          retval =
+            col.getFullYear() +
+            '-' +
+            (col.getMonth() + 1) +
+            '-' +
+            (col.getDate() + 1)
+        } else if (col.indexOf('T')) {
+          let dt = col.split('T')
+          retval = dt[0]
+        } else {
+          let dt = col.split('/')
+          retval = dt[2] + '-' + dt[0] + '-' + dt[1]
+        }
+        console.log('>>retval>>', retval)
+        return retval
+      }
+    },
     getExcel: function ({ state, commit, dispatch, getters }) {
       importExcel(null).then((workbook) => {
         console.log(workbook)
         state.workbook = workbook
+        dispatch('fixDates')
         return
         let sheets = Object.keys(workbook)
         var nsheet, ncol

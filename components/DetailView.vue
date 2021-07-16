@@ -48,6 +48,7 @@ export default {
             type: 'string',
             'x-cols': c.width,
             'x-display': c.type,
+            format: c.type === 'date' ? 'date' : null,
             enum: c.lookup.length ? c.lookup : null,
           }
         })
