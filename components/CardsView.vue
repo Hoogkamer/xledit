@@ -21,7 +21,7 @@
       .card(v-for="itemCard in allItems" @click='doEditItem({data:itemCard, metaData:sheet.metaData, name:sheet.name})') 
         .name(v-if="sheet.metaData.find(a => a.cardField === 'name')") {{itemCard[sheet.metaData.find(a => a.cardField === 'name').name]}}
         .desc(v-if="sheet.metaData.find(a => a.cardField === 'description')") {{itemCard[sheet.metaData.find(a => a.cardField === 'description').name]}}
-        hr
+        hr(v-if="sheet.metaData.filter(a => a.cardField==='info').length")
         .infor(v-for="infoItem in sheet.metaData.filter(a => a.cardField==='info')")
           .item1(:title='infoItem.name') {{itemCard[infoItem.name]}}
         .child(v-if='isParent')
@@ -230,8 +230,9 @@ export default {
   font-size: 14px;
 }
 .desc {
-  height: 50px;
+  height: 55px;
   font-size: 12px;
+  overflow: hidden;
 }
 .item1 {
   padding: 0px 10px;

@@ -29,6 +29,8 @@
                   v-select(:items="cardFields" label="CardField" dense v-model="col.cardField")
                 td
                   v-select(:items="allColumns" label="Parent" dense v-model='col.parent')
+                td
+                  v-icon.delicon(title="Delete column" @click="deleteColumn(sheet.metaData, a)") mdi-delete
     v-dialog(v-if='lookupEditColumn'  v-model="lookupEditColumn" max-width="800px" persistent)
       v-card
         
@@ -103,6 +105,10 @@ export default {
       this.lookupEditColumn = null
       this.newValue = null
     },
+    deleteColumn: function (sheet, col) {
+      console.log('deleting', sheet, col)
+      sheet.splice(col, 1)
+    },
     openExcel: function () {
       this.getExcel()
     },
@@ -143,5 +149,12 @@ h2 {
 .card-content {
   color: grey;
   padding: 10px;
+}
+.delicon {
+  color: grey;
+  cursor: pointer;
+}
+.delicon:hover {
+  color: red;
 }
 </style>

@@ -73,7 +73,8 @@ const api = {
       console.log('index', index)
       if (index > -1) {
         let newob = {
-          ...wbSheet.data[index],
+          // ...wbSheet.data[index],
+          ...getEmptyObject(wbSheet.metaData),
           ...value,
         }
         Vue.set(wbSheet.data, index, newob)

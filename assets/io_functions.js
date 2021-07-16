@@ -70,10 +70,17 @@ function importExcel(that) {
               }
             )
 
+            let shData = []
+            sheetData.forEach((d, i) => {
+              let o = d
+              o.__id = i
+              shData.push(o)
+            })
+
             sheetDatas.push({
               name: sheet,
               maxKey: sheetData.length,
-              data: getSheetData(sheetData),
+              data: getSheetData(shData),
               metaData: getSheetMetadata(sheetData, sheetMetadata),
             })
           })
@@ -88,8 +95,8 @@ function importExcel(that) {
   })
 }
 function getSheetData(sheetData) {
-  //return sheetData
-  return sheetData.map((v, i) => ({ ...v, __id: i }))
+  return sheetData
+  //return sheetData.map((v, i) => ({ ...v, __id: i }))
 }
 function getSheetMetadata(data, metadata) {
   console.log(data, metadata)
