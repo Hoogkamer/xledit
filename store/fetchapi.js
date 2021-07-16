@@ -58,18 +58,39 @@ const api = {
       console.log(state.workbook, value, sheet, id)
       let wbSheet = state.workbook.find((x) => x.name === sheet)
       let index = wbSheet.data.findIndex((e) => e.__id === id)
-
-      let newob = {
-        ...wbSheet.data[index],
-        ...value,
+      console.log('index', index)
+      if (index > -1) {
+        let newob = {
+          ...wbSheet.data[index],
+          ...value,
+        }
+        Vue.set(wbSheet.data, index, newob)
+      } else {
+        let newob = {
+          ...getEmptyObject(wbSheet.metaData),
+          __id: wbSheet.maxKey++,
+          ...value,
+        }
+        wbSheet.data.push(newob)
       }
-      Vue.set(
-        state.workbook.find((x) => x.name === sheet).data,
-        index,
-        newob
-      )
+
+      function getEmptyObject(metaData) {
+        let retObj = {}
+        metaData.forEach((c) => {
+          retObj[c] = ''
+        })
+        return retObj
+      }
+
       // state.editItem = state[sheet][index]
       // console.log(state[sheet])
+    },
+    deleteItem: function (state, { sheet, id }) {
+      let wbSheet = state.workbook.find((x) => x.name === sheet)
+      let index = wbSheet.data.findIndex((e) => e.__id === id)
+      if (index > -1) {
+        wbSheet.data.splice(index, 1)
+      }
     },
     setEditItem: function (state, value) {
       console.log('edititem', value)

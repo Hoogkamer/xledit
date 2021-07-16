@@ -6,6 +6,7 @@ function prepareExport(sheet) {
   sheetChanged.metaData.forEach((col) => {
     col.lookup = col.lookup.join(' _,_ ')
   })
+  sheetChanged.data.forEach((row) => delete row.__id)
   return sheetChanged
 }
 function exportExcel(workbook) {
@@ -71,6 +72,7 @@ function importExcel(that) {
 
             sheetDatas.push({
               name: sheet,
+              maxKey: sheetData.length,
               data: getSheetData(sheetData),
               metaData: getSheetMetadata(sheetData, sheetMetadata),
             })

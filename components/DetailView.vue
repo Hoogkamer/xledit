@@ -3,7 +3,9 @@
       v-form
         h3 {{editItem.name}}
         v-jsf(v-model="editable" :schema='schema' :options="options" v-if="schema")
-      v-btn.primary(@click='backToList') OK
+      v-btn.primary.bt(@click='backToList') OK
+      v-btn.secondary.bt(@click='cancel') Cancel
+      v-btn.red.right(@click='delItem') Delete
 </template>
 
 <script>
@@ -74,7 +76,18 @@ export default {
       setItem: 'api/setItem',
       setEditItem: 'api/setEditItem',
       setEditItemData: 'api/setEditItemData',
+      deleteItem: 'api/deleteItem',
     }),
+    cancel: function () {
+      this.setEditItem(null)
+    },
+    delItem: function () {
+      this.deleteItem({
+        id: this.editItem.data.__id,
+        sheet: this.editItem.name,
+      })
+      this.setEditItem(null)
+    },
     backToList: function () {
       this.setItem({
         value: this.editable,
@@ -90,5 +103,11 @@ export default {
 .cont {
   background-color: white;
   padding: 20px;
+}
+.bt {
+  margin-right: 10px;
+}
+.right {
+  float: right;
 }
 </style>

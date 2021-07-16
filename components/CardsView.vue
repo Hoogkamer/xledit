@@ -15,6 +15,8 @@
             v-text-field(v-model='search' label='Search' clearable) 
           v-col
             v-switch(v-model='searchInDescription' label='In description')
+      .buttons
+        v-btn(@click="doEditItem({data:{}, metaData:sheet.metaData, name:sheet.name})") new
           
       .card(v-for="itemCard in allItems" @click='doEditItem({data:itemCard, metaData:sheet.metaData, name:sheet.name})') 
         .name {{itemCard[sheet.metaData.find(a => a.cardField === 'name').name]}}
