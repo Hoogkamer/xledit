@@ -162,6 +162,7 @@ export default {
       if (this.hasParent) {
         val.data[this.hasParent.childColumn] = this.hasParent.parentId
       }
+      console.log('kkkk', val.data)
       this.setEditItem(val)
     },
     gotoSheet(val) {
@@ -172,7 +173,7 @@ export default {
         let f = sheet.metaData.find(
           (col) => col.parent.indexOf(this.sheet.name) > -1
         )
-        if (f) {
+        if (f && val) {
           result.parentColumn = f.parent.split('/')[1]
           result.childColumn = f.name
           result.childSheet = sheet

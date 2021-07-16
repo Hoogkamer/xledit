@@ -56,17 +56,6 @@ export default {
         return schema
       },
     },
-    itemModel: {
-      get() {
-        console.log('++++', this.editItem.data)
-        return this.editItem.data
-      },
-      set(value) {
-        //this.setItem({ value: value, sheet: this.sheet })
-        console.log('----', value)
-        this.setEditItemData(value)
-      },
-    },
   },
   watch: {},
   mounted() {
@@ -74,10 +63,9 @@ export default {
   },
   methods: {
     ...mapMutations({
-      setItem: 'api/setItem',
       setEditItem: 'api/setEditItem',
-      setEditItemData: 'api/setEditItemData',
       deleteItem: 'api/deleteItem',
+      addItem: 'api/addItem',
     }),
     cancel: function () {
       this.setEditItem(null)
@@ -90,11 +78,18 @@ export default {
       this.setEditItem(null)
     },
     backToList: function () {
-      this.setItem({
-        value: this.editable,
-        sheet: this.editItem.name,
-        id: this.editItem.data.__id,
+      Object.keys(this.editable).forEach((key) => {
+        this.$set(this.editItem.data, key, this.editable[key])
       })
+      console.log('99', this.editItem.data)
+      if (
+        !this.editItem.data.__id &&
+        !(this.editItem.data.__id === 0)
+      )
+        this.addItem({
+          item: this.editItem.data,
+          sheet: this.editItem.name,
+        })
       this.setEditItem(null)
     },
   },

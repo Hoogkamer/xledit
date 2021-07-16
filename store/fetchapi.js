@@ -66,26 +66,16 @@ const api = {
     },
   },
   mutations: {
-    setItem: function (state, { value, sheet, id }) {
-      console.log(state.workbook, value, sheet, id)
+    addItem: function (state, { item, sheet }) {
+      console.log(state.workbook, item, sheet)
       let wbSheet = state.workbook.find((x) => x.name === sheet)
-      let index = wbSheet.data.findIndex((e) => e.__id === id)
-      console.log('index', index)
-      if (index > -1) {
-        let newob = {
-          // ...wbSheet.data[index],
-          ...getEmptyObject(wbSheet.metaData),
-          ...value,
-        }
-        Vue.set(wbSheet.data, index, newob)
-      } else {
-        let newob = {
-          ...getEmptyObject(wbSheet.metaData),
-          __id: wbSheet.maxKey++,
-          ...value,
-        }
-        wbSheet.data.push(newob)
+
+      let newob = {
+        ...getEmptyObject(wbSheet.metaData),
+        __id: wbSheet.maxKey++,
+        ...item,
       }
+      wbSheet.data.push(newob)
 
       function getEmptyObject(metaData) {
         let retObj = {}
@@ -94,9 +84,6 @@ const api = {
         })
         return retObj
       }
-
-      // state.editItem = state[sheet][index]
-      // console.log(state[sheet])
     },
     deleteItem: function (state, { sheet, id }) {
       let wbSheet = state.workbook.find((x) => x.name === sheet)
@@ -108,10 +95,6 @@ const api = {
     setEditItem: function (state, value) {
       console.log('edititem', value)
       state.editItem = value
-    },
-    setEditItemData: function (state, data) {
-      state.editItem.data = data
-      console.log(state.editItem, state.workbook)
     },
   },
 }
