@@ -3,8 +3,8 @@
 
       .parentInfo(v-if='hasParent')
         h3 Items of parent:
-        .parentname {{hasParent.itemCard.cardInfo.name}}
-        .parentdescr {{hasParent.itemCard.cardInfo.description}}
+        .parentname {{hasParent.parentName}}
+        .parentdescr {{hasParent.parentDescription}}
         v-btn(@click='gotoSheet(null)' small) Remove Filter
       .filters
         .filter(v-for = 'filter in itemFilters')
@@ -19,13 +19,13 @@
         v-btn(@click="doEditItem({data:{}, metaData:sheet.metaData, name:sheet.name})") create new
           
       .card(v-for="itemCard in allItems" @click='doEditItem({data:itemCard, metaData:sheet.metaData, name:sheet.name})') 
-        .name {{itemCard[sheet.metaData.find(a => a.cardField === 'name').name]}}
-        .desc {{itemCard[sheet.metaData.find(a => a.cardField === 'description').name]}}
+        .name(v-if="sheet.metaData.find(a => a.cardField === 'name')") {{itemCard[sheet.metaData.find(a => a.cardField === 'name').name]}}
+        .desc(v-if="sheet.metaData.find(a => a.cardField === 'description')") {{itemCard[sheet.metaData.find(a => a.cardField === 'description').name]}}
         hr
         .infor(v-for="infoItem in sheet.metaData.filter(a => a.cardField==='info')")
           .item1(:title='infoItem.name') {{itemCard[infoItem.name]}}
-        //- .child(v-if='itemCard.cardInfo.child')
-        //-   v-icon.children(x-small @click.stop='gotoSheet({...itemCard.cardInfo.child, itemCard})' title="View children") mdi-file-tree-outline
+        .child(v-if='isParent')
+          v-icon.children(x-small @click.stop='gotoSheet(itemCard)' title="View children") mdi-file-tree-outline
       v-dialog(v-model='showModel' v-if="editItem")
         v-card
           detail-view
@@ -65,7 +65,7 @@ export default {
 
   computed: {
     // ...mapState('cyto', ['userOptions', 'metaInfo']),
-    ...mapState('api', ['editItem']),
+    ...mapState('api', ['editItem', 'workbook']),
     itemFilters: function () {
       let filters = []
 
@@ -88,12 +88,27 @@ export default {
       console.log('ffff', filters)
       return filters
     },
+    isParent: function () {
+      let found = false
+      this.workbook.forEach((sheet) => {
+        // todo: if multiple sheets or columns have this parent, they are overwritten: it can be only a parent of 1 thing, this should be more
+        let f = sheet.metaData.find(
+          (col) => col.parent.indexOf(this.sheet.name) > -1
+        )
+        if (f) {
+          found = true
+        }
+      })
+
+      return found
+    },
     allItems: function () {
       let list = this.sheet.data
 
       if (this.hasParent) {
         list = list.filter(
-          (l) => l[this.hasParent.col] === this.hasParent.val
+          (l) =>
+            l[this.hasParent.childColumn] === this.hasParent.parentId
         )
       }
 
@@ -144,11 +159,51 @@ export default {
       this.search = ''
     },
     doEditItem: function (val) {
+      if (this.hasParent) {
+        val.data[this.hasParent.childColumn] = this.hasParent.parentId
+      }
       this.setEditItem(val)
     },
     gotoSheet(val) {
-      this.$emit('showParent', val)
-      console.log(val)
+      //todo: find child sheet, column and filtervalue
+      let result = {}
+      this.workbook.forEach((sheet) => {
+        // todo: if multiple sheets or columns have this parent, they are overwritten: it can be only a parent of 1 thing, this should be more
+        let f = sheet.metaData.find(
+          (col) => col.parent.indexOf(this.sheet.name) > -1
+        )
+        if (f) {
+          result.parentColumn = f.parent.split('/')[1]
+          result.childColumn = f.name
+          result.childSheet = sheet
+          result.parentName = this.sheet.metaData.find(
+            (a) => a.cardField === 'name'
+          )
+            ? val[
+                this.sheet.metaData.find(
+                  (a) => a.cardField === 'name'
+                ).name
+              ]
+            : '--no name--'
+
+          result.parentDescription = this.sheet.metaData.find(
+            (a) => a.cardField === 'description'
+          )
+            ? val[
+                this.sheet.metaData.find(
+                  (a) => a.cardField === 'description'
+                ).name
+              ]
+            : ''
+          result.parentId = val[result.parentColumn]
+        }
+      })
+      if (!result.childSheet) {
+        result.childSheet = this.sheet
+      }
+
+      console.log('gotosheet', result)
+      this.$emit('showParent', result)
     },
   },
 }
@@ -156,12 +211,14 @@ export default {
 <style scoped>
 .card {
   width: 500px;
+
   border: 1px solid grey;
   padding: 10px;
   margin: 5px;
   display: inline-block;
   cursor: pointer;
   position: relative;
+  vertical-align: top;
 }
 .card:hover {
   background-color: aliceblue;

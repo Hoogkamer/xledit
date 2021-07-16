@@ -38,6 +38,7 @@ const api = {
       })
       function col2date(col) {
         let retval = ''
+        if (!col) return retval
         if (typeof col.getMonth === 'function') {
           retval =
             col.getFullYear() +
@@ -61,32 +62,6 @@ const api = {
         console.log(workbook)
         state.workbook = workbook
         dispatch('fixDates')
-        return
-        let sheets = Object.keys(workbook)
-        var nsheet, ncol
-
-        sheets
-          .filter((s) => s.indexOf('#MD') > 0)
-          .forEach((sheet) => {
-            workbook[sheet].data.forEach((col) => {
-              if (col['y-parent']) {
-                nsheet = col['y-parent'].split('/')[0]
-                ncol = col['y-parent'].split('/')[1]
-                workbook[nsheet + '#MD'].data.find(
-                  (col) => col.name === ncolsheets
-                )['y-child'] =
-                  sheet.split('#')[0] + '/' + col.name + '/' + ncol
-              }
-            })
-          })
-        console.log(workbook)
-        sheets.forEach((sheet) => {
-          if (sheet.indexOf('#MD') == -1) {
-            processData(state, workbook, sheet)
-          } else {
-            processMetadata(state, workbook, sheet)
-          }
-        })
       })
     },
   },

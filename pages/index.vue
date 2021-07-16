@@ -48,8 +48,9 @@ export default {
     }),
     showParent: function (e) {
       console.log(e)
-      this.hasParent = e
-      if (e) this.showSheet = e.sheet
+      if (e.parentId) this.hasParent = e
+      else this.hasParent = null
+      if (e) this.showSheet = e.childSheet
     },
 
     openExcel: function () {
