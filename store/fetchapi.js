@@ -33,6 +33,14 @@ const api = {
     putExcel: function ({ state, commit, dispatch, getters }) {
       exportExcel(state.workbook)
     },
+    addSheetToWorkbook: function ({ state }, sheetName) {
+      state.workbook.push({
+        name: sheetName,
+        data: [],
+        metaData: [],
+        maxKey: 0,
+      })
+    },
     fixDates: function ({ state }) {
       state.workbook.forEach((wb) => {
         console.log(wb)

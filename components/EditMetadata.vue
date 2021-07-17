@@ -88,7 +88,6 @@ export default {
     allColumns: function () {
       let cols = []
       this.workbook.forEach((sheet) => {
-        console.log(sheetnewNArow[sheet.metaData[colnr].name])
         sheet.metaData.forEach((col) => {
           cols.push(sheet.name + '/' + col.name)
         })
