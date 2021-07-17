@@ -44,8 +44,16 @@ export default {
       get() {
         let schema = { type: 'object', properties: {} }
         this.editItem.metaData.forEach((c) => {
+          let type = [
+            'string',
+            'number',
+            'integer',
+            'boolean',
+          ].includes(c.type)
+            ? c.type
+            : 'string'
           schema.properties[c.name] = {
-            type: 'string',
+            type: type,
             'x-cols': c.width,
             'x-display': c.type,
             format: c.type === 'date' ? 'date' : null,

@@ -11,7 +11,7 @@
         .vspacer
         span SHEET: 
         v-btn-toggle(v-model="showSheet" )
-          v-btn.primary(x-small v-for='sheet in workbook' :value='sheet' @click='hasParent=null') {{sheet.name}}
+          v-btn.primary(small v-for='sheet in workbook' :value='sheet' @click='hasParent=null') {{sheet.name}}
         v-btn(x-small @click='addSheet' ) Add sheet
       cards-view(v-if='showSheet && !editMetadata' :sheet="showSheet" @showParent="showParent" :hasParent='hasParent')
       .message(v-if="!workbook.length") Open an excel or add a sheet
