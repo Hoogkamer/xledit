@@ -16,6 +16,18 @@ const api = {
       return state[sheet]
     },
     workbook: (state) => state.workbook,
+    defaultMetadata: (state) => {
+      return {
+        name: c,
+        type: 'string',
+        width: 6,
+        filter: false,
+        cardField: 'none',
+        parent: 'none',
+        order: i,
+        lookup: [],
+      }
+    },
   },
   actions: {
     putExcel: function ({ state, commit, dispatch, getters }) {

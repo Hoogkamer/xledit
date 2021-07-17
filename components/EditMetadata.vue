@@ -30,7 +30,10 @@
                 td
                   v-select(:items="allColumns" label="Parent" dense v-model='col.parent')
                 td
-                  v-icon.delicon(title="Delete column" @click="deleteColumn(sheet.metaData, a)") mdi-delete
+                  v-icon.delicon(title="Delete column" @click="deleteColumn(sheet, a)") mdi-delete
+                  v-icon.delicon(title="Rename column" @click="renameColumn(sheet, a)") mdi-pencil
+                  
+          v-btn(@click='addColumn(sheet)') add column
     v-dialog(v-if='lookupEditColumn'  v-model="lookupEditColumn" max-width="800px" persistent)
       v-card
         
@@ -63,6 +66,7 @@
 import CardsView from '@/components/CardsView'
 import draggable from 'vuedraggable'
 import { mapState, mapGetters, mapActions, mapMutations } from 'vuex'
+import { getDefaultMetadata } from '@/assets/io_functions'
 export default {
   components: { draggable },
 
@@ -84,7 +88,7 @@ export default {
     allColumns: function () {
       let cols = []
       this.workbook.forEach((sheet) => {
-        console.log(sheet)
+        console.log(sheetnewNArow[sheet.metaData[colnr].name])
         sheet.metaData.forEach((col) => {
           cols.push(sheet.name + '/' + col.name)
         })
@@ -105,9 +109,30 @@ export default {
       this.lookupEditColumn = null
       this.newValue = null
     },
-    deleteColumn: function (sheet, col) {
-      console.log('deleting', sheet, col)
-      sheet.splice(col, 1)
+    addColumn: function (sheet) {
+      //todo: check double name
+      let name = window.prompt('Column name')
+      if (!name) return
+      let item = getDefaultMetadata(name)
+      sheet.metaData.push(item)
+    },
+    deleteColumn: function (sheet, colnr) {
+      if (confirm('delete column: ' + sheet.metaData[colnr].name))
+        sheet.metaData.splice(colnr, 1)
+    },
+    renameColumn: function (sheet, colnr) {
+      //todo: check double name
+      let newName = window.prompt(
+        'New column name for: ' + sheet.metaData[colnr].name
+      )
+      if (!newName) return
+      let oldName = sheet.metaData[colnr].name
+      sheet.metaData[colnr].name = newName
+
+      sheet.data.forEach((row) => {
+        row[newName] = row[oldName]
+        delete row[oldName]
+      })
     },
     openExcel: function () {
       this.getExcel()

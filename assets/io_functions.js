@@ -108,21 +108,23 @@ function getSheetMetadata(data, metadata) {
 
   let columns = Object.keys(data[0])
   let retval = columns.map((c, i) => {
-    let rv = {
-      name: c,
-      type: 'string',
-      width: 6,
-      filter: false,
-      cardField: 'none',
-      parent: 'none',
-      order: i,
-      lookup: [],
-    }
+    let rv = getDefaultMetadata(c)
     return { ...rv, ...metadata.find((nm) => nm.name === c) }
   })
   console.log('md', metadata, 'rv', retval)
   retval.sort((a, b) => a.order - b.order)
   return retval
 }
+function getDefaultMetadata(name) {
+  return {
+    name: name,
+    type: 'string',
+    width: 6,
+    filter: false,
+    cardField: 'none',
+    parent: 'none',
+    lookup: [],
+  }
+}
 
-export { importExcel, exportExcel }
+export { importExcel, exportExcel, getDefaultMetadata }
