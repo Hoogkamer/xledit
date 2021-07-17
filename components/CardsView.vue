@@ -1,5 +1,7 @@
 <template lang="pug">
     div
+      hr
+      h2 {{sheet.name}}
 
       .parentInfo(v-if='hasParent')
         h3 Items of parent:
@@ -93,7 +95,8 @@ export default {
       this.workbook.forEach((sheet) => {
         // todo: if multiple sheets or columns have this parent, they are overwritten: it can be only a parent of 1 thing, this should be more
         let f = sheet.metaData.find(
-          (col) => col.parent.indexOf(this.sheet.name) > -1
+          (col) =>
+            col.parent && col.parent.indexOf(this.sheet.name) > -1
         )
         if (f) {
           found = true
@@ -171,7 +174,8 @@ export default {
       this.workbook.forEach((sheet) => {
         // todo: if multiple sheets or columns have this parent, they are overwritten: it can be only a parent of 1 thing, this should be more
         let f = sheet.metaData.find(
-          (col) => col.parent.indexOf(this.sheet.name) > -1
+          (col) =>
+            col.parent && col.parent.indexOf(this.sheet.name) > -1
         )
         if (f && val) {
           result.parentColumn = f.parent.split('/')[1]

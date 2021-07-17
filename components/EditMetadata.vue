@@ -33,7 +33,7 @@
                   v-icon.delicon(title="Delete column" @click="deleteColumn(sheet, a)") mdi-delete
                   v-icon.delicon(title="Rename column" @click="renameColumn(sheet, a)") mdi-pencil
                   
-          v-btn(@click='addColumn(sheet)') add column
+          v-btn.primary(x-small @click='addColumn(sheet)') add column
     v-dialog(v-if='lookupEditColumn'  v-model="lookupEditColumn" max-width="800px" persistent)
       v-card
         

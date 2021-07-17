@@ -6,7 +6,21 @@ function prepareExport(sheet) {
   sheetChanged.metaData.forEach((col) => {
     col.lookup = col.lookup.join(' _,_ ')
   })
-  sheetChanged.data.forEach((row) => delete row.__id)
+  // remove columns which are not defined + add missing columns
+  let definedColumns = sheetChanged.metaData.map((c) => c.name)
+  let emptyObject = {}
+  definedColumns.forEach((c) => {
+    emptyObject[c] = ''
+  })
+
+  sheetChanged.data = sheetChanged.data.map((row) => {
+    let rv = {}
+    definedColumns.forEach((c) => {
+      rv[c] = row[c]
+    })
+    return rv
+  })
+
   return sheetChanged
 }
 function exportExcel(workbook) {
@@ -99,21 +113,21 @@ function getSheetData(sheetData) {
   //return sheetData.map((v, i) => ({ ...v, __id: i }))
 }
 function getSheetMetadata(data, metadata) {
-  console.log(data, metadata)
-  metadata.forEach((md, i) => {
-    md.lookup = md.lookup.split(' _,_ ')
-    if ((md.lookup.length === 1) & !md.lookup[0]) md.lookup = []
-    md.order = i
-  })
-
-  let columns = Object.keys(data[0])
-  let retval = columns.map((c, i) => {
-    let rv = getDefaultMetadata(c)
-    return { ...rv, ...metadata.find((nm) => nm.name === c) }
-  })
-  console.log('md', metadata, 'rv', retval)
-  retval.sort((a, b) => a.order - b.order)
-  return retval
+  let hasMetadata = metadata.length > 0
+  if (hasMetadata) {
+    metadata.forEach((md, i) => {
+      md.lookup = md.lookup.split(' _,_ ')
+      if ((md.lookup.length === 1) & !md.lookup[0]) md.lookup = []
+      md.order = i
+    })
+    return metadata
+  } else {
+    let columns = Object.keys(data[0])
+    let retval = columns.map((c, i) => {
+      return getDefaultMetadata(c)
+    })
+    return retval
+  }
 }
 function getDefaultMetadata(name) {
   return {
