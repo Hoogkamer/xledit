@@ -52,13 +52,22 @@ export default {
           ].includes(c.type)
             ? c.type
             : 'string'
-          schema.properties[c.name] = {
+
+          let cprop = {
             type: type,
             'x-cols': c.width,
             'x-display': c.type,
+            description: c.description,
             format: c.type === 'date' ? 'date' : null,
             enum: c.lookup && c.lookup.length ? c.lookup : null,
           }
+          if (c.type === 'multi select list') {
+            cprop.type = 'array'
+            cprop.items = { type: 'string', enum: cprop.enum }
+
+            delete cprop.enum
+          }
+          schema.properties[c.name] = cprop
         })
         console.log('schema', schema)
         return schema

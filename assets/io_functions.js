@@ -7,16 +7,13 @@ function prepareExport(sheet) {
     col.lookup = col.lookup.join(' _,_ ')
   })
   // remove columns which are not defined + add missing columns
-  let definedColumns = sheetChanged.metaData.map((c) => c.name)
-  let emptyObject = {}
-  definedColumns.forEach((c) => {
-    emptyObject[c] = ''
-  })
 
   sheetChanged.data = sheetChanged.data.map((row) => {
     let rv = {}
-    definedColumns.forEach((c) => {
-      rv[c] = row[c]
+    sheetChanged.metaData.forEach((c) => {
+      rv[c.name] = Array.isArray(row[c.name])
+        ? '[[' + row[c.name].join(' _,_ ')
+        : row[c.name]
     })
     return rv
   })
@@ -109,6 +106,18 @@ function importExcel(that) {
   })
 }
 function getSheetData(sheetData) {
+  sheetData.forEach((d) => {
+    Object.keys(d).forEach((c) => {
+      console.log(c, d[c])
+      if (
+        d[c] &&
+        typeof d[c] === 'string' &&
+        d[c].indexOf('[[') === 0
+      ) {
+        d[c] = d[c].substring(2).split(' _,_ ')
+      }
+    })
+  })
   return sheetData
   //return sheetData.map((v, i) => ({ ...v, __id: i }))
 }
@@ -132,6 +141,7 @@ function getSheetMetadata(data, metadata) {
 function getDefaultMetadata(name) {
   return {
     name: name,
+    description: '',
     type: 'string',
     width: 6,
     filter: false,

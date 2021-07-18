@@ -21,11 +21,11 @@
         v-btn(@click="doEditItem({data:{}, metaData:sheet.metaData, name:sheet.name})") create new
           
       .card(v-for="itemCard in allItems" @click='doEditItem({data:itemCard, metaData:sheet.metaData, name:sheet.name})') 
-        .name(v-if="sheet.metaData.find(a => a.cardField === 'name')") {{itemCard[sheet.metaData.find(a => a.cardField === 'name').name]}}
-        .desc(v-if="sheet.metaData.find(a => a.cardField === 'description')") {{itemCard[sheet.metaData.find(a => a.cardField === 'description').name]}}
-        hr(v-if="sheet.metaData.filter(a => a.cardField==='info').length")
+        .name(v-for="namecol in sheet.metaData.filter(a => a.cardField === 'name')" :title="getTitle(namecol)") {{itemCard[namecol.name]}}
+        .desc(v-for="descriptioncol in sheet.metaData.filter(a => a.cardField === 'description')" :title="getTitle(descriptioncol)") {{itemCard[descriptioncol.name]}}
+        hr.hrgrey(v-if="sheet.metaData.filter(a => a.cardField==='info').length")
         .infor(v-for="infoItem in sheet.metaData.filter(a => a.cardField==='info')")
-          .item1(:title='infoItem.name') {{itemCard[infoItem.name]}}
+          .item1(:title='getTitle(infoItem)') {{itemCard[infoItem.name]}}
         .child(v-if='isParent')
           v-icon.children(x-small @click.stop='gotoSheet(itemCard)' title="View children") mdi-file-tree-outline
       v-dialog(v-model='showModel' v-if="editItem")
@@ -69,26 +69,33 @@ export default {
     // ...mapState('cyto', ['userOptions', 'metaInfo']),
     ...mapState('api', ['editItem', 'workbook']),
     itemFilters: function () {
-      let filters = []
+      let filterColumns = []
 
       this.sheet.metaData
         .filter((c) => c.filter)
-        .forEach((filter) => {
-          filters.push({
-            name: filter['name'],
-            values: [
-              ...new Set(
-                this.sheet.data.map((item) =>
-                  item[filter['name']] !== 0
-                    ? item[filter['name']] || ''
-                    : 0
-                )
-              ),
-            ],
+        .forEach((filterColumn) => {
+          filterColumns.push({
+            name: filterColumn['name'],
+            values: getValuesFromColumn(
+              this.sheet.data,
+              filterColumn.name
+            ),
           })
         })
-      console.log('ffff', filters)
-      return filters
+      return filterColumns
+      function getValuesFromColumn(data, column) {
+        let datas = []
+        data.forEach((row) => {
+          console.log(row)
+          let value = row[column]
+          if (Array.isArray(value)) {
+            value.forEach((v) => {
+              datas.push(v)
+            })
+          } else datas.push(value)
+        })
+        return [...new Set(datas)]
+      }
     },
     isParent: function () {
       let found = false
@@ -117,9 +124,19 @@ export default {
 
       Object.keys(this.activeFilters).forEach((key) => {
         if (this.activeFilters[key].length) {
-          list = list.filter((l) =>
-            this.activeFilters[key].includes(l[key])
-          )
+          list = list.filter((l) => {
+            if (Array.isArray(l[key])) {
+              let r = false
+              l[key].forEach((lk) => {
+                if (this.activeFilters[key].includes(lk)) {
+                  r = true
+                }
+              })
+              return r
+            } else {
+              return this.activeFilters[key].includes(l[key])
+            }
+          })
         }
       })
       if (this.search) {
@@ -141,14 +158,12 @@ export default {
                 .indexOf(this.search.toLowerCase()) >= 0)
         )
       }
-      console.log(list)
+
       return list
     },
   },
   watch: {},
-  mounted() {
-    console.log('oooo', this.sheet)
-  },
+  mounted() {},
   methods: {
     ...mapMutations({
       setEditItem: 'api/setEditItem',
@@ -165,8 +180,14 @@ export default {
       if (this.hasParent) {
         val.data[this.hasParent.childColumn] = this.hasParent.parentId
       }
-      console.log('kkkk', val.data)
+
       this.setEditItem(val)
+    },
+    getTitle(namecol) {
+      return (
+        namecol.name +
+        (namecol.description ? ' - ' + namecol.description : '')
+      )
     },
     gotoSheet(val) {
       //todo: find child sheet, column and filtervalue
@@ -206,8 +227,6 @@ export default {
       if (!result.childSheet) {
         result.childSheet = this.sheet
       }
-
-      console.log('gotosheet', result)
       this.$emit('showParent', result)
     },
   },
@@ -283,5 +302,8 @@ export default {
   margin: 20px 0px;
   border: 1px solid grey;
   padding: 10px;
+}
+.hrgrey {
+  border-top: 1px solid lightgrey;
 }
 </style>

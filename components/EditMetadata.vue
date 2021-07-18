@@ -17,10 +17,12 @@
                           v-icon.dragicon mdi-drag
                         td
                           .colnm {{col.name}}
+                td
+                  v-icon.delicon(title="Edit field name or description" @click="editColumnDetails=col") mdi-pencil
                 td  
                   v-select(:items="types" label="Type" dense v-model="col.type")
                 td
-                  v-icon.icon(v-if="col.type === 'dropdown'" title='edit dropdown list' @click='lookupEditColumn = col') mdi-playlist-edit
+                  v-icon.icon(v-if="col.type.indexOf('select') >=0 " title='edit dropdown list' @click='showLookupDialog(col)') mdi-playlist-edit
                 td  
                   v-select(:items="widths" label="Width" dense v-model="col.width")
                 td  
@@ -31,33 +33,26 @@
                   v-select(:items="allColumns" label="Parent" dense v-model='col.parent')
                 td
                   v-icon.delicon(title="Delete column" @click="deleteColumn(sheet, a)") mdi-delete
-                  v-icon.delicon(title="Rename column" @click="renameColumn(sheet, a)") mdi-pencil
+                  
                   
           v-btn.primary(x-small @click='addColumn(sheet)') add column
     v-dialog(v-if='lookupEditColumn'  v-model="lookupEditColumn" max-width="800px" persistent)
-      v-card
-        
+      v-card   
         .card-content
-
           v-icon.close(@click="lookupEditColumn=null;newValue=null") mdi-close
           h2 {{lookupEditColumn.name}}
-          table
-            draggable(v-model="lookupEditColumn.lookup" tag='tbody')
-              tr(v-for='(dropdownValue,i) in lookupEditColumn.lookup' :key='i')
-                td
-                  v-icon.dragicon1 mdi-drag
-                td 
-                  input.inp(v-model = "lookupEditColumn.lookup[i]")
-                td
-                  v-btn(@click='lookupEditColumn.lookup.splice(i, 1)' x-small) Remove
-            tr
-              td
-              td
-                input.inp(v-model='newValue' placeholder='enter new value....')
-              td
-                v-btn(@click='lookupEditColumn.lookup.push(newValue);newValue=""' x-small) Add
+          textarea.tarea(rows='8' cols='50' v-model='lookupValuesInput')
+          br
           v-btn(@click="closeDialog()") close
-          v-btn(@click='lookupEditColumn.lookup.sort()') Sort list
+          v-btn(@click='lookupValuesInputSort') Sort list
+    v-dialog(v-if="editColumnDetails" v-model="editColumnDetails" width = '400px' persistent)
+     v-card   
+        .card-content
+          v-icon.close(@click="editColumnDetails=null") mdi-close
+          v-text-field(v-model='editColumnDetails.name' label="Field name")
+          v-textarea(v-model="editColumnDetails.description" label="Field description")
+          v-btn(@click="editColumnDetails=null") close
+
 
     
 </template>
@@ -73,6 +68,8 @@ export default {
   data() {
     return {
       lookupEditColumn: null,
+      lookupValuesInput: '',
+      editColumnDetails: null,
       newValue: '',
       panel: [0],
       types: [
@@ -80,7 +77,8 @@ export default {
         'textarea',
         'integer',
         'date',
-        'dropdown',
+        'select list',
+        'multi select list',
         'boolean',
       ],
       widths: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
@@ -111,7 +109,21 @@ export default {
       getExcel: 'api/getExcel',
       fixDates: 'api/fixDates',
     }),
-    closeDialog: function () {
+    lookupValuesInputSort: function () {
+      this.lookupValuesInput = this.lookupValuesInput
+        .split('\n')
+        .filter((n) => n)
+        .sort()
+        .join('\n')
+    },
+    showLookupDialog: function (col) {
+      this.lookupEditColumn = col
+      this.lookupValuesInput = col.lookup.join('\n')
+    },
+    closeDialog: function (col) {
+      this.lookupEditColumn.lookup = this.lookupValuesInput
+        .split('\n')
+        .filter((n) => n)
       this.lookupEditColumn = null
       this.newValue = null
     },
@@ -187,5 +199,9 @@ h2 {
 }
 .delicon:hover {
   color: red;
+}
+.tarea {
+  border: 1px solid black;
+  padding: 5px;
 }
 </style>
