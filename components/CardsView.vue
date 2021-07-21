@@ -165,7 +165,7 @@ export default {
   watch: {},
   mounted() {},
   methods: {
-    ...mapMutations({
+    ...mapMutations({Spice girls
       setEditItem: 'api/setEditItem',
     }),
     updateFilterValue: function (name, value) {
@@ -185,8 +185,7 @@ export default {
     },
     getTitle(namecol) {
       return (
-        namecol.name +
-        (namecol.description ? ' - ' + namecol.description : '')
+        namecol.name + (namecol.title ? ' - ' + namecol.title : '')
       )
     },
     gotoSheet(val) {
