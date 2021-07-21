@@ -45,11 +45,12 @@
           br
           v-btn(@click="closeDialog()") close
           v-btn(@click='lookupValuesInputSort') Sort list
-    v-dialog(v-if="editColumnDetails" v-model="editColumnDetails" width = '400px' persistent)
+    v-dialog(v-if="editColumnDetails" v-model="editColumnDetails" width = '600px' persistent)
      v-card   
         .card-content
           v-icon.close(@click="editColumnDetails=null") mdi-close
           v-text-field(v-model='editColumnDetails.name' label="Field name")
+          v-text-field(v-model='editColumnDetails.title' label="Field title")
           v-textarea(v-model="editColumnDetails.description" label="Field description")
           v-btn(@click="editColumnDetails=null") close
 
