@@ -165,7 +165,7 @@ export default {
   watch: {},
   mounted() {},
   methods: {
-    ...mapMutations({Spice girls
+    ...mapMutations({
       setEditItem: 'api/setEditItem',
     }),
     updateFilterValue: function (name, value) {
