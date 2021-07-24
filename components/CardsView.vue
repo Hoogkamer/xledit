@@ -1,7 +1,10 @@
 <template lang="pug">
     div
-      hr
-      h2 {{sheet.name}}
+      
+      .sheetname 
+        span {{sheet.name}}
+
+        v-btn.bt.primary(primary @click="doEditItem({data:{}, metaData:sheet.metaData, name:sheet.name})" small) create new
 
       .parentInfo(v-if='hasParent')
         h3 Items of parent:
@@ -18,7 +21,7 @@
           v-col
             v-switch(v-model='searchInDescription' label='In description')
       .buttons
-        v-btn(@click="doEditItem({data:{}, metaData:sheet.metaData, name:sheet.name})") create new
+      
           
       .card(v-for="itemCard in allItems" @click='doEditItem({data:itemCard, metaData:sheet.metaData, name:sheet.name})') 
         .name(v-for="namecol in sheet.metaData.filter(a => a.cardField === 'name')" :title="getTitle(namecol)") {{itemCard[namecol.name]}}
@@ -304,5 +307,18 @@ export default {
 }
 .hrgrey {
   border-top: 1px solid lightgrey;
+}
+.sheetname {
+  width: 100%;
+  font-size: 22px;
+
+  color: black;
+  padding: 1px 10px;
+  margin: 10px 0px;
+  border-bottom: 3px solid grey;
+}
+.bt {
+  float: right;
+  margin-top: 3px;
 }
 </style>

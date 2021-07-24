@@ -1,20 +1,18 @@
 <template lang="pug">
   v-app
-    v-main
-      v-btn.bt(@click='openExcel()') Open excel
-      template(v-if='workbook.length')
-        v-btn.bt( @click='editMetadata=true') Define columns
-        v-btn.bt(@click = 'saveExcel()') Save excel
-      hr
-      edit-metadata(v-if='editMetadata' @close='editMetadata=false')
-      div(v-else)
-        .vspacer
-        span SHEET: 
-        v-btn-toggle(v-model="showSheet" )
-          v-btn.primary(small v-for='(sheet,i) in workbook' :value='sheet' @click='hasParent=null' :key="i") {{sheet.name}}
-        v-btn(x-small @click='addSheet' ) Add sheet
-      cards-view(v-if='showSheet && !editMetadata' :sheet="showSheet" @showParent="showParent" :hasParent='hasParent')
-      .message(v-if="!workbook.length") Open an excel or add a sheet
+      app-header
+      .vspacerheader
+      v-container()
+        edit-metadata(v-if='editMetadata' @close='editMetadata=false')
+        div(v-else)
+          .vspacer
+        
+          v-tabs(v-model="activeTab" )
+            v-tab(v-for="(sheet, i) in workbook" :key="i" :value='sheet') {{sheet.name}}
+            v-btn.add(@click='addSheet' title='add sheet' text large) [+]
+            
+        cards-view(v-if='showSheet1 && !editMetadata' :sheet="showSheet1" @showParent="showParent" :hasParent='hasParent')
+        .message(v-if="!workbook.length") Open an excel or add a sheet
    
 </template>
 
@@ -22,15 +20,22 @@
 import CardsView from '@/components/CardsView'
 import DetailView from '@/components/DetailView'
 import EditMetadata from '@/components/EditMetadata'
+import Header from '~/components/Header.vue'
 
 import { mapState, mapGetters, mapActions, mapMutations } from 'vuex'
 export default {
-  components: { CardsView, DetailView, EditMetadata },
+  components: {
+    CardsView,
+    DetailView,
+    EditMetadata,
+    'app-header': Header,
+  },
 
   data() {
     return {
       show: true,
-      showSheet: '',
+      showSheet: 1,
+      activeTab: 0,
       editMetadata: false,
       activeFilters: {},
       searchInDescription: false,
@@ -43,12 +48,13 @@ export default {
     // ...mapState('cyto', ['userOptions', 'metaInfo']),
     ...mapState('api', ['sheets']),
     ...mapGetters('api', ['workbook']),
+    showSheet1: function () {
+      return this.workbook[this.activeTab]
+    },
   },
   mounted() {},
   methods: {
     ...mapActions({
-      getExcel: 'api/getExcel',
-      putExcel: 'api/putExcel',
       addSheetToWorkbook: 'api/addSheetToWorkbook',
     }),
     showParent: function (e) {
@@ -62,13 +68,6 @@ export default {
       if (!sheetName) return
       this.addSheetToWorkbook(sheetName)
     },
-    openExcel: function () {
-      this.getExcel()
-    },
-    saveExcel: function () {
-      console.log(this.workbook)
-      this.putExcel()
-    },
   },
 }
 </script>
@@ -78,5 +77,11 @@ export default {
 }
 .vspacer {
   height: 15px;
+}
+.vspacerheader {
+  height: 35px;
+}
+.add {
+  height: 48px;
 }
 </style>
