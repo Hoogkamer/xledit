@@ -3,16 +3,16 @@
       app-header
       .vspacerheader
       v-container()
-        edit-metadata(v-if='editMetadata' @close='editMetadata=false')
+        edit-metadata(v-if='editMetadata || editMetadata===0' @close='setEditMetadata(null)' :openTab="editMetadata")
         div(v-else)
           .vspacer
         
           v-tabs(v-model="activeTab" )
-            v-tab(v-for="(sheet, i) in workbook" :key="i" :value='sheet') {{sheet.name}}
+            v-tab(v-for="(sheet, i) in workbook" :key="i" :value='sheet' @click='resetParentFilter(null)') {{sheet.name}}
             v-btn.add(@click='addSheet' title='add sheet' text large) [+]
             
-        cards-view(v-if='showSheet1 && !editMetadata' :sheet="showSheet1" @showParent="showParent" :hasParent='hasParent')
-        .message(v-if="!workbook.length") Open an excel or add a sheet
+          cards-view(v-if='showSheet1 && !editMetadata' :sheet="showSheet1" :sheetnr="activeTab" @showParent="showParent" :hasParent='hasParent')
+          .message(v-if="!workbook.length") Open an excel or add a sheet
    
 </template>
 
@@ -36,7 +36,6 @@ export default {
       show: true,
       showSheet: 1,
       activeTab: 0,
-      editMetadata: false,
       activeFilters: {},
       searchInDescription: false,
       search: '',
@@ -46,7 +45,7 @@ export default {
 
   computed: {
     // ...mapState('cyto', ['userOptions', 'metaInfo']),
-    ...mapState('api', ['sheets']),
+    ...mapState('api', ['sheets', 'editMetadata']),
     ...mapGetters('api', ['workbook']),
     showSheet1: function () {
       return this.workbook[this.activeTab]
@@ -56,12 +55,21 @@ export default {
   methods: {
     ...mapActions({
       addSheetToWorkbook: 'api/addSheetToWorkbook',
+      setEditMetadata: 'api/setEditMetadata',
     }),
+    resetParentFilter: function () {
+      this.hasParent = null
+    },
     showParent: function (e) {
       console.log(e)
       if (e.parentId) this.hasParent = e
       else this.hasParent = null
-      if (e) this.showSheet = e.childSheet
+      if (e) {
+        this.showSheet = e.childSheet
+        this.activeTab = this.workbook.findIndex(
+          (sheet) => sheet === e.childSheet
+        )
+      }
     },
     addSheet: function () {
       let sheetName = window.prompt('give sheet name')

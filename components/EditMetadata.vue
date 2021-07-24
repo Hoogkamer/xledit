@@ -1,10 +1,11 @@
 <template lang="pug">
   div
-    h1 edit metadata
-    v-btn(@click='fixDates();$emit("close")') Close
+    h1 Edit metadata
+    v-btn.primary(@click='fixDates();$emit("close")') Close
     v-expansion-panels(v-model='panel' multiple)
       v-expansion-panel(v-for="(sheet, i) in workbook" :key="i" )
-        v-expansion-panel-header {{sheet.name}}
+        v-expansion-panel-header
+          .panname {{sheet.name}}
         v-expansion-panel-content
           table
             draggable(v-model="sheet.metaData" tag='tbody')
@@ -65,6 +66,9 @@ import { mapState, mapGetters, mapActions, mapMutations } from 'vuex'
 import { getDefaultMetadata } from '@/assets/io_functions'
 export default {
   components: { draggable },
+  props: {
+    openTab: { type: Number, required: true },
+  },
 
   data() {
     return {
@@ -104,6 +108,7 @@ export default {
 
   mounted() {
     console.log(this.workbook)
+    this.panel = [this.openTab]
   },
   methods: {
     ...mapActions({
@@ -204,5 +209,9 @@ h2 {
 .tarea {
   border: 1px solid black;
   padding: 5px;
+}
+.panname {
+  font-weight: 600;
+  text-decoration: underline;
 }
 </style>

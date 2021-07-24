@@ -4,7 +4,9 @@
       .sheetname 
         span {{sheet.name}}
 
-        v-btn.bt.primary(primary @click="doEditItem({data:{}, metaData:sheet.metaData, name:sheet.name})" small) create new
+        .bt
+          v-btn.primary(primary @click="doEditItem({data:{}, metaData:sheet.metaData, name:sheet.name})" small) create new
+          v-icon.ic(title='Edit columns' @click='setEditMetadata(sheetnr)') mdi-pencil
 
       .parentInfo(v-if='hasParent')
         h3 Items of parent:
@@ -20,7 +22,6 @@
             v-text-field(v-model='search' label='Search' clearable) 
           v-col
             v-switch(v-model='searchInDescription' label='In description')
-      .buttons
       
           
       .card(v-for="itemCard in allItems" @click='doEditItem({data:itemCard, metaData:sheet.metaData, name:sheet.name})') 
@@ -48,6 +49,7 @@ export default {
   props: {
     sheet: { type: Object, required: true },
     hasParent: { type: Object, default: null },
+    sheetnr: { type: Number, required: true },
   },
   data() {
     return {
@@ -171,6 +173,7 @@ export default {
     ...mapMutations({
       setEditItem: 'api/setEditItem',
     }),
+    ...mapActions({ setEditMetadata: 'api/setEditMetadata' }),
     updateFilterValue: function (name, value) {
       delete this.activeFilters[name]
       this.$set(this.activeFilters, name, value)
@@ -245,7 +248,7 @@ export default {
   cursor: pointer;
   position: relative;
   vertical-align: top;
-  border-radius: 10px;
+  border-radius: 5px;
 }
 .card:hover {
   box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
@@ -285,6 +288,8 @@ export default {
   position: absolute;
   bottom: 0px;
   right: 0px;
+  background-color: white;
+  padding: 3px;
 }
 .children {
   font-size: 24px !important;
@@ -319,6 +324,13 @@ export default {
 }
 .bt {
   float: right;
-  margin-top: 3px;
+  display: block;
+}
+.ic {
+  margin: 0px 10px;
+  cursor: pointer;
+}
+.ic:hover {
+  color: black;
 }
 </style>

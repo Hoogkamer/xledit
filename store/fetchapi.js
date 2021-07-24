@@ -7,11 +7,13 @@ const api = {
   state: () => ({
     workbook: [],
     editItem: null,
+    editMetadata: null,
   }),
   getters: {
     getSheet: (state, getters) => (sheet) => {
       return state[sheet]
     },
+    editMetadata: (state) => state.editMetadata,
     workbook: (state) => state.workbook,
     defaultMetadata: (state) => {
       return {
@@ -22,6 +24,7 @@ const api = {
         cardField: 'none',
         parent: 'none',
         order: i,
+
         lookup: [],
       }
     },
@@ -29,6 +32,9 @@ const api = {
   actions: {
     putExcel: function ({ state, commit, dispatch, getters }) {
       exportExcel(state.workbook)
+    },
+    setEditMetadata({ state }, val) {
+      state.editMetadata = val
     },
     addSheetToWorkbook: function ({ state }, sheetName) {
       state.workbook.push({

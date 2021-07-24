@@ -9,7 +9,7 @@
           .bspace2
           v-btn.bt(text @click='openExcel()') Open excel
           template(v-if='workbook.length')
-               v-btn.bt(text @click='editMetadata=true') Define columns
+               v-btn.bt(text @click='setEditMetadata(0)') Define columns
                v-btn.bt(text @click = 'saveExcel()') Save excel
     
 </template>
@@ -26,6 +26,7 @@ export default {
       getExcel: 'api/getExcel',
       putExcel: 'api/putExcel',
       addSheetToWorkbook: 'api/addSheetToWorkbook',
+      setEditMetadata: 'api/setEditMetadata',
     }),
     openExcel: function () {
       this.getExcel()
