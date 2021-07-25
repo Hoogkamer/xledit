@@ -2,17 +2,24 @@
   v-app
       app-header
       .vspacerheader
-      v-container()
-        edit-metadata(v-if='editMetadata || editMetadata===0' @close='setEditMetadata(null)' :openTab="editMetadata")
-        div(v-else)
-          .vspacer
-        
-          v-tabs(v-model="activeTab" )
-            v-tab(v-for="(sheet, i) in workbook" :key="i" :value='sheet' @click='resetParentFilter(null)') {{sheet.name}}
-            v-btn.add(@click='addSheet' title='add sheet' text large) [+]
-            
-          cards-view(v-if='showSheet1 && !editMetadata' :sheet="showSheet1" :sheetnr="activeTab" @showParent="showParent" :hasParent='hasParent')
-          .message(v-if="!workbook.length") Open an excel or add a sheet
+      .datacontainer(v-if='workbook.length')
+ 
+          edit-metadata(v-if='editMetadata || editMetadata===0' @close='setEditMetadata(null)' :openTab="editMetadata")
+          div(v-else)
+            .vspacer
+          
+            v-tabs(v-model="activeTab" )
+              v-tab(v-for="(sheet, i) in workbook" :key="i" :value='sheet' @click='resetParentFilter(null)') {{sheet.name}}
+              v-btn.add(@click='addSheet' title='add sheet' text large) [+]
+              
+            cards-view(v-if='showSheet1 && !editMetadata' :sheet="showSheet1" :sheetnr="activeTab" @showParent="showParent" :hasParent='hasParent')
+      .nodatacontainer(v-else)
+          .nodata
+            img.nodataimage(src="@/assets/images/nodata.svg")
+            .text Open an excel document or create a new one to get started
+            .buttons
+              v-btn.primary.bt(@click='openExcel()') Open excel
+              v-btn.primary.bt(@click='addSheet') Create new
    
 </template>
 
@@ -56,9 +63,13 @@ export default {
     ...mapActions({
       addSheetToWorkbook: 'api/addSheetToWorkbook',
       setEditMetadata: 'api/setEditMetadata',
+      getExcel: 'api/getExcel',
     }),
     resetParentFilter: function () {
       this.hasParent = null
+    },
+    openExcel: function () {
+      this.getExcel()
     },
     showParent: function (e) {
       console.log(e)
@@ -71,8 +82,12 @@ export default {
         )
       }
     },
-    addSheet: function () {
-      let sheetName = window.prompt('give sheet name')
+    addSheet: async function () {
+      let sheetName = await this.$dialog.prompt({
+        text: 'Name',
+        title: 'Enter a name for the sheet',
+      })
+
       if (!sheetName) return
       this.addSheetToWorkbook(sheetName)
     },
@@ -83,13 +98,37 @@ export default {
 .bt {
   margin: 5px;
 }
-.vspacer {
-  height: 15px;
-}
 .vspacerheader {
   height: 35px;
 }
 .add {
   height: 48px;
+}
+.nodata {
+  margin: auto;
+  display: inline-block;
+}
+.nodataimage {
+  width: 400px;
+
+  padding: 30px;
+  box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 6px -1px,
+    rgba(0, 0, 0, 0.06) 0px 2px 4px -1px;
+}
+.nodatacontainer {
+  margin-top: 100px;
+  width: 100%;
+  text-align: center;
+}
+.datacontainer {
+  padding: 20px;
+}
+.text {
+  font-size: 24px;
+  color: grey;
+  margin: 20px;
+}
+.buttons {
+  margin: 20px;
 }
 </style>

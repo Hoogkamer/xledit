@@ -36,12 +36,18 @@ const api = {
     setEditMetadata({ state }, val) {
       state.editMetadata = val
     },
+    createNewWorkbook({ state }, val) {
+      state.workbook = []
+      state.editItem = null
+      state.editMetadata = null
+    },
     addSheetToWorkbook: function ({ state }, sheetName) {
       state.workbook.push({
         name: sheetName,
         data: [],
         metaData: [],
         maxKey: 0,
+        showFilters: false,
       })
     },
     fixDates: function ({ state }) {
@@ -85,10 +91,16 @@ const api = {
         console.log(workbook)
         state.workbook = workbook
         dispatch('fixDates')
+        state.workbook.forEach((sheet) => {
+          Vue.set(sheet, 'showFilters', false)
+        })
       })
     },
   },
   mutations: {
+    toggleShowFiltersOfSheet({ state }, sheet) {
+      sheet.showFilters = !sheet.showFilters
+    },
     addItem: function (state, { item, sheet }) {
       console.log(state.workbook, item, sheet)
       let wbSheet = state.workbook.find((x) => x.name === sheet)

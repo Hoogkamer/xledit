@@ -9,19 +9,23 @@
           v-icon.ic(title='Edit columns' @click='setEditMetadata(sheetnr)') mdi-pencil
 
       .parentInfo(v-if='hasParent')
-        h3 Items of parent:
+        h5 Items of:
         .parentname {{hasParent.parentName}}
         .parentdescr {{hasParent.parentDescription}}
         v-btn(@click='gotoSheet(null)' small) Remove Filter
-      .filters
+      
+      .search
+        table
+          tr
+            td(v-if='itemFilters.length')
+              v-icon.filtericon(@click="toggleShowFiltersOfSheet(sheet)" title='Toggle show filters') mdi-filter-menu
+            td
+              v-text-field.searchinput(v-model='search' label='Search' clearable) 
+            td
+              v-switch(v-model='searchInDescription' label='In description')
+      .filters(v-if='sheet.showFilters')
         .filter(v-for = 'filter in itemFilters')
           v-select( :items="filter.values" :menu-props="{ maxHeight: '400' }" :label="filter.name" @change="updateFilterValue(filter.name, $event)"  multiple)
-      .search
-        v-row
-          v-col
-            v-text-field(v-model='search' label='Search' clearable) 
-          v-col
-            v-switch(v-model='searchInDescription' label='In description')
       
           
       .card(v-for="itemCard in allItems" @click='doEditItem({data:itemCard, metaData:sheet.metaData, name:sheet.name})') 
@@ -172,6 +176,7 @@ export default {
   methods: {
     ...mapMutations({
       setEditItem: 'api/setEditItem',
+      toggleShowFiltersOfSheet: 'api/toggleShowFiltersOfSheet',
     }),
     ...mapActions({ setEditMetadata: 'api/setEditMetadata' }),
     updateFilterValue: function (name, value) {
@@ -282,7 +287,9 @@ export default {
   margin: 0px 10px;
 }
 .search {
-  max-width: 600px;
+}
+.searchinput {
+  width: 300px;
 }
 .child {
   position: absolute;
@@ -309,6 +316,7 @@ export default {
   margin: 20px 0px;
   border: 1px solid grey;
   padding: 10px;
+  max-width: 1000px;
 }
 .hrgrey {
   border-top: 1px solid lightgrey;
@@ -332,5 +340,12 @@ export default {
 }
 .ic:hover {
   color: black;
+}
+.filtericon {
+  padding: 10px;
+  cursor: pointer;
+}
+.filtericon:hover {
+  color: blue;
 }
 </style>

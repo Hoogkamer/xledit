@@ -133,31 +133,42 @@ export default {
       this.lookupEditColumn = null
       this.newValue = null
     },
-    addColumn: function (sheet) {
+    addColumn: async function (sheet) {
       //todo: check double name
-      let name = window.prompt('Column name')
+
+      let name = await this.$dialog.prompt({
+        text: 'Name',
+        title: 'Enter column name',
+      })
+
       if (!name) return
       let item = getDefaultMetadata(name)
       sheet.metaData.push(item)
     },
-    deleteColumn: function (sheet, colnr) {
-      if (confirm('delete column: ' + sheet.metaData[colnr].name))
-        sheet.metaData.splice(colnr, 1)
-    },
-    renameColumn: function (sheet, colnr) {
-      //todo: check double name
-      let newName = window.prompt(
-        'New column name for: ' + sheet.metaData[colnr].name
-      )
-      if (!newName) return
-      let oldName = sheet.metaData[colnr].name
-      sheet.metaData[colnr].name = newName
-
-      sheet.data.forEach((row) => {
-        row[newName] = row[oldName]
-        delete row[oldName]
+    deleteColumn: async function (sheet, colnr) {
+      const res = await this.$dialog.confirm({
+        text: 'Delete column: ' + sheet.metaData[colnr].name,
+        title: 'Warning',
       })
+      if (res) sheet.metaData.splice(colnr, 1)
     },
+    // renameColumn: async function (sheet, colnr) {
+    //   //todo: check double name
+
+    //   let newName = await this.$dialog.prompt({
+    //     text: 'Name',
+    //     title: 'New column name for: ' + sheet.metaData[colnr].name,
+    //   })
+
+    //   if (!newName) return
+    //   let oldName = sheet.metaData[colnr].name
+    //   sheet.metaData[colnr].name = newName
+
+    //   sheet.data.forEach((row) => {
+    //     row[newName] = row[oldName]
+    //     delete row[oldName]
+    //   })
+    // },
     openExcel: function () {
       this.getExcel()
     },

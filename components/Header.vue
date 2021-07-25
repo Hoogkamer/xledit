@@ -7,9 +7,11 @@
           .brandname1 XL
           .brandname2 edit
           .bspace2
-          v-btn.bt(text @click='openExcel()') Open excel
+
+          //v-btn.bt(v-if='!workbook.length' text @click='openExcel()') Open excel
+          v-btn.bt(v-if='workbook.length' text @click='newWorkbook()') Clear all
+
           template(v-if='workbook.length')
-               v-btn.bt(text @click='setEditMetadata(0)') Define columns
                v-btn.bt(text @click = 'saveExcel()') Save excel
     
 </template>
@@ -27,9 +29,17 @@ export default {
       putExcel: 'api/putExcel',
       addSheetToWorkbook: 'api/addSheetToWorkbook',
       setEditMetadata: 'api/setEditMetadata',
+      createNewWorkbook: 'api/createNewWorkbook',
     }),
     openExcel: function () {
       this.getExcel()
+    },
+    newWorkbook: async function () {
+      const res = await this.$dialog.confirm({
+        text: 'Wipe the data and create something new',
+        title: 'Clear all',
+      })
+      if (res) this.createNewWorkbook()
     },
     saveExcel: function () {
       console.log(this.workbook)

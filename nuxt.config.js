@@ -47,6 +47,7 @@ export default {
   modules: [
     // https://go.nuxtjs.dev/pwa
     '@nuxtjs/pwa',
+    'vuetify-dialog/nuxt',
   ],
 
   // PWA module configuration: https://go.nuxtjs.dev/pwa

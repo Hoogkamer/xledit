@@ -19,6 +19,7 @@
     "pug": "^3.0.2",
     "pug-plain-loader": "^1.1.0",
     "vuedraggable": "^2.24.3",
+    "vuetify-dialog": "^2.0.16",
     "xlsx": "^0.17.0"
   },
   "devDependencies": {
