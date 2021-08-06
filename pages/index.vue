@@ -1,134 +1,111 @@
 <template lang="pug">
-  v-app
-      app-header
-      .vspacerheader
-      .datacontainer(v-if='workbook.length')
- 
-          edit-metadata(v-if='editMetadata || editMetadata===0' @close='setEditMetadata(null)' :openTab="editMetadata")
-          div(v-else)
-            .vspacer
-          
-            v-tabs(v-model="activeTab" )
-              v-tab(v-for="(sheet, i) in workbook" :key="i" :value='sheet' @click='resetParentFilter(null)') {{sheet.name}}
-              v-btn.add(@click='addSheet' title='add sheet' text large) [+]
-              
-            cards-view(v-if='showSheet1 && !editMetadata' :sheet="showSheet1" :sheetnr="activeTab" @showParent="showParent" :hasParent='hasParent')
-      .nodatacontainer(v-else)
-          .nodata
-            img.nodataimage(src="@/assets/images/nodata.svg")
-            .text Open an excel document or create a new one to get started
-            .buttons
-              v-btn.primary.bt(@click='openExcel()') Open excel
-              v-btn.primary.bt(@click='addSheet') Create new
-   
+    v-app
+        .header(:style="{ backgroundImage: `url(${image})`}")
+            .logo
+                span.t1 XL
+                span.t2 edit
+            table
+                tr
+                    td
+                        .message A web app for excel sheets.
+                        NuxtLink(to="/app") 
+                          .button 
+                            .bt GET STARTED
+                    td
+                        img.apptitle(src='@/assets/images/undraw_feeling_proud_qne1.svg')
+        .content
+          .section
+            .title - A very easy solution to visualise and edit excel sheets -
+            .cont Are you using excel to manage lists of data? Or do you need an easy web based solution to managed a list based set of data? Then this app is for you! You specify what you want. Then this app automatically creates an application with sorts and filters and edit function for you excel sheets. You can get started in minutes!
+            .cont -
+            .cont For example: create an app to manage your collection of music albums, with artists and songs. Download this excel and then open in the application to see an example: 
+              a(href='./CD_Database.xlsx' download) CD database
 </template>
 
 <script>
-import CardsView from '@/components/CardsView'
-import DetailView from '@/components/DetailView'
-import EditMetadata from '@/components/EditMetadata'
-import Header from '~/components/Header.vue'
-
-import { mapState, mapGetters, mapActions, mapMutations } from 'vuex'
+import bikeImg from 'assets/images/background.jpg'
 export default {
-  components: {
-    CardsView,
-    DetailView,
-    EditMetadata,
-    'app-header': Header,
-  },
-
   data() {
     return {
-      show: true,
-      showSheet: 1,
-      activeTab: 0,
-      activeFilters: {},
-      searchInDescription: false,
-      search: '',
-      hasParent: null,
+      image: bikeImg,
     }
-  },
-
-  computed: {
-    // ...mapState('cyto', ['userOptions', 'metaInfo']),
-    ...mapState('api', ['sheets', 'editMetadata']),
-    ...mapGetters('api', ['workbook']),
-    showSheet1: function () {
-      return this.workbook[this.activeTab]
-    },
-  },
-  mounted() {},
-  methods: {
-    ...mapActions({
-      addSheetToWorkbook: 'api/addSheetToWorkbook',
-      setEditMetadata: 'api/setEditMetadata',
-      getExcel: 'api/getExcel',
-    }),
-    resetParentFilter: function () {
-      this.hasParent = null
-    },
-    openExcel: function () {
-      this.getExcel()
-    },
-    showParent: function (e) {
-      console.log(e)
-      if (e.parentId) this.hasParent = e
-      else this.hasParent = null
-      if (e) {
-        this.showSheet = e.childSheet
-        this.activeTab = this.workbook.findIndex(
-          (sheet) => sheet === e.childSheet
-        )
-      }
-    },
-    addSheet: async function () {
-      let sheetName = await this.$dialog.prompt({
-        text: 'Name',
-        title: 'Enter a name for the sheet',
-      })
-
-      if (!sheetName) return
-      this.addSheetToWorkbook(sheetName)
-    },
   },
 }
 </script>
 <style scoped>
-.bt {
-  margin: 5px;
-}
-.vspacerheader {
-  height: 35px;
-}
-.add {
-  height: 48px;
-}
-.nodata {
-  margin: auto;
-  display: inline-block;
-}
-.nodataimage {
+.logo {
   width: 400px;
-
-  padding: 30px;
-  box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 6px -1px,
-    rgba(0, 0, 0, 0.06) 0px 2px 4px -1px;
+  display: inline-block;
+  font-size: 30px;
+  color: white;
+  margin: 30px;
 }
-.nodatacontainer {
+.apptitle {
+  width: 400px;
+  margin-left: 200px;
+}
+.message {
+  font-size: 36px;
+  font-weight: 600;
+  color: white;
+  vertical-align: top;
+  display: inline-block;
+  margin-top: 50px;
+}
+.header {
+  width: 100%;
+  height: 400px;
+  background-size: cover;
+}
+td {
+  vertical-align: top;
+  padding: 0px 20px;
+}
+.line {
+  width: 100%;
+  margin: 0px 20px;
+  text-align: center;
+  font-size: 60px;
+  color: white;
+}
+.button {
+  width: 100%;
+  text-align: center;
+  margin-top: 20px;
+}
+.bt {
+  font-size: 20px;
+  color: white;
+  font-weight: 600;
+  display: inline-block;
+  padding: 10px 26px;
+  margin: 10px;
+  border: 1px solid white;
+  cursor: pointer;
+}
+.bt:hover {
+  color: lightgray;
+  border-color: lightgray;
+}
+.header a:visited {
+  color: white;
+}
+.header a {
+  color: white;
+}
+.content {
   margin-top: 100px;
   width: 100%;
   text-align: center;
+  margin-bottom: 40px;
 }
-.datacontainer {
-  padding: 20px;
+.section {
+  max-width: 1100px;
+  margin: auto;
 }
-.text {
-  font-size: 24px;
+.title {
+  text-transform: uppercase;
   color: grey;
-  margin: 20px;
-}
-.buttons {
-  margin: 20px;
+  margin: 20px 0px;
 }
 </style>
