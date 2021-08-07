@@ -16,10 +16,15 @@
         .content
           .section
             .title - A very easy solution to visualise and edit excel sheets -
-            .cont Are you using excel to manage lists of data? Or do you need an easy web based solution to managed a list based set of data? Then this app is for you! You specify what you want. Then this app automatically creates an application with sorts and filters and edit function for you excel sheets. You can get started in minutes!
+            .cont Are you using excel to manage data? Do you need an easy web based solution to manage lists of data? Then this app is for you! You specify what you want. Then this app automatically creates an application with sorts and filters and edit function for you excel sheets. You can get started in minutes!
             .cont -
             .cont For example: create an app to manage your collection of music albums, with artists and songs. Download this excel and then open in the application to see an example: 
               a(href='./CD_Database.xlsx' download) CD database
+          .section
+            img.screen(src='@/assets/images/screen3.png')
+            img.screen(src='@/assets/images/screen2.png')
+            img.screen(src='@/assets/images/screen1.png')
+        
 </template>
 
 <script>
@@ -107,5 +112,10 @@ td {
   text-transform: uppercase;
   color: grey;
   margin: 20px 0px;
+}
+.screen {
+  border: 1px solid grey;
+  border-radius: 10px;
+  width: 700px;
 }
 </style>
