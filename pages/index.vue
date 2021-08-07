@@ -16,10 +16,35 @@
         .content
           .section
             .title - A very easy solution to visualise and edit excel sheets -
-            .cont Are you using excel to manage lists of data? Or do you need an easy web based solution to managed a list based set of data? Then this app is for you! You specify what you want. Then this app automatically creates an application with sorts and filters and edit function for you excel sheets. You can get started in minutes!
+            .cont Are you using excel to manage data? Do you need an easy web based solution to manage lists of data? Then this app is for you! You specify what you want. Then this app automatically creates an application with sorts and filters and edit function for you excel sheets. You can get started in minutes!
+            .cont -
+            .cont All processing happens in your browser on your computer only. So nothing is sent to a webserver. Your data stays safe. Visit the 
+              a(href='https://github.com/Hoogkamer/xledit' target='_blank') Github page
             .cont -
             .cont For example: create an app to manage your collection of music albums, with artists and songs. Download this excel and then open in the application to see an example: 
               a(href='./CD_Database.xlsx' download) CD database
+          .section
+            table
+              tr
+                td
+                  .count 1
+                  .text Open an excel sheet or start from scratch. Click the pencil on the right and define the columns you need. 
+                td
+                  img.screen(src='@/assets/images/screen3.png')
+            table
+              tr
+                td
+                  img.screen(src='@/assets/images/screen2.png')
+                td
+                  .count 2
+                  .text Click on button Create New and enter some data. Save your data in excel
+            table
+              tr 
+                td
+                  .count 3
+                  .text Now filter, search and browse your data. Press the children icons to view the connected data from another excel sheet if applicable
+                img.screen(src='@/assets/images/screen1.png')
+        
 </template>
 
 <script>
@@ -107,5 +132,18 @@ td {
   text-transform: uppercase;
   color: grey;
   margin: 20px 0px;
+}
+.screen {
+  border: 1px solid grey;
+  border-radius: 10px;
+  width: 700px;
+}
+.count {
+  font-size: 80px;
+  color: lightgray;
+}
+.text {
+  color: grey;
+  font-size: 18px;
 }
 </style>
