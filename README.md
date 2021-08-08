@@ -1,4 +1,5 @@
 # xledit
+An excel sheets editor/viewer. See xledit.com 
 
 ## Build Setup
 
