@@ -26,8 +26,11 @@
       .filters(v-if='sheet.showFilters')
         .filter(v-for = 'filter in itemFilters')
           v-select( :items="filter.values" :menu-props="{ maxHeight: '400' }" :label="filter.name" @change="updateFilterValue(filter.name, $event)"  multiple)
-      
-          
+      div(v-if='!sheet.metaData.length')
+        .warn Define the columns by pressing the pencil on the right
+      div(v-if='!sheet.data.length')
+        .warn Create an item by pressing 'CREATE NEW' button
+
       .card(v-for="itemCard in allItems" @click='doEditItem({data:itemCard, metaData:sheet.metaData, name:sheet.name})') 
         .name(v-for="namecol in sheet.metaData.filter(a => a.cardField === 'name')" :title="getTitle(namecol)") {{itemCard[namecol.name]}}
         .desc(v-for="descriptioncol in sheet.metaData.filter(a => a.cardField === 'description')" :title="getTitle(descriptioncol)") {{itemCard[descriptioncol.name]}}
@@ -347,5 +350,12 @@ export default {
 }
 .filtericon:hover {
   color: blue;
+}
+.warn {
+  background-color: red;
+  color: white;
+  display: inline-block;
+  padding: 5px 20px;
+  margin: 10px;
 }
 </style>

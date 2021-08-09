@@ -34,8 +34,8 @@
                   v-select(:items="allColumns" label="Parent" dense v-model='col.parent')
                 td
                   v-icon.delicon(title="Delete column" @click="deleteColumn(sheet, a)") mdi-delete
-                  
-                  
+          div(v-if='nameNotDefined(sheet)')        
+            .warn At least one of the 'CardField' should have 'name' selected       
           v-btn.primary(x-small @click='addColumn(sheet)') add column
     v-dialog(v-if='lookupEditColumn'  v-model="lookupEditColumn" max-width="800px" persistent)
       v-card   
@@ -47,7 +47,7 @@
           v-btn(@click="closeDialog()") close
           v-btn(@click='lookupValuesInputSort') Sort list
     v-dialog(v-if="editColumnDetails" v-model="editColumnDetails" width = '600px' persistent)
-     v-card   
+      v-card   
         .card-content
           v-icon.close(@click="editColumnDetails=null") mdi-close
           v-text-field(v-model='editColumnDetails.name' label="Field name")
@@ -115,6 +115,9 @@ export default {
       getExcel: 'api/getExcel',
       fixDates: 'api/fixDates',
     }),
+    nameNotDefined: function (sheet) {
+      return !sheet.metaData.find((col) => col.cardField === 'name')
+    },
     lookupValuesInputSort: function () {
       this.lookupValuesInput = this.lookupValuesInput
         .split('\n')
@@ -224,5 +227,12 @@ h2 {
 .panname {
   font-weight: 600;
   text-decoration: underline;
+}
+.warn {
+  background-color: red;
+  color: white;
+  display: inline-block;
+  padding: 5px 20px;
+  margin: 10px;
 }
 </style>
