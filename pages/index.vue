@@ -4,6 +4,8 @@
             .logo
                 span.t1 XL
                 span.t2 edit
+            a(href='https://github.com/Hoogkamer/xledit' target='_blank' title='Github repository')
+              img.github(src='@/assets/images/GitHub-Mark-64px.png')
             table
                 tr
                     td
@@ -145,5 +147,10 @@ td {
 .text {
   color: grey;
   font-size: 18px;
+}
+.github {
+  float: right;
+  height: 50px;
+  margin: 20px;
 }
 </style>

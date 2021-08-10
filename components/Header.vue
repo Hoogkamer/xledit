@@ -1,18 +1,20 @@
 <template lang="pug">
      v-app-bar(color="deep-purple accent-4" dense dark elevate-on-scroll absolute)
-          .brandname0.b1 /
-          .brandname0.b2 /
-          .brandname0.b3 / 
-          .bspace
-          .brandname1 XL
-          .brandname2 edit
-          .bspace2
+        NuxtLink(to="/") 
+          .logo
+            .brandname0.b1 /
+            .brandname0.b2 /
+            .brandname0.b3 / 
+            .bspace
+            .brandname1 XL
+            .brandname2 edit
+            .bspace2
 
           //v-btn.bt(v-if='!workbook.length' text @click='openExcel()') Open excel
-          v-btn.bt(v-if='workbook.length' text @click='newWorkbook()') Clear all
+        v-btn.bt(v-if='workbook.length' text @click='newWorkbook()') Clear all
 
-          template(v-if='workbook.length')
-               v-btn.bt(text @click = 'saveExcel()') Save excel
+        template(v-if='workbook.length')
+              v-btn.bt(text @click = 'saveExcel()') Save excel
     
 </template>
 <script>
@@ -52,6 +54,9 @@ export default {
 .bt {
   margin: 5px;
 }
+.logo {
+  display: inline-block;
+}
 .brandname0,
 .brandname1,
 .brandname2 {
@@ -73,8 +78,10 @@ export default {
 }
 .bspace {
   width: 5px;
+  display: inline-block;
 }
 .bspace2 {
   width: 30px;
+  display: inline-block;
 }
 </style>
