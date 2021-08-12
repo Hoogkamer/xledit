@@ -20,8 +20,30 @@
             .title - A very easy solution to visualise and edit excel sheets -
             .cont Are you using excel to manage data? Do you need an easy web based solution to manage lists of data? Then this app is for you! You specify what you want. Then this app automatically creates an application with sorts and filters and edit function for you excel sheets. You can get started in minutes!
             .cont -
-            .cont All processing happens in your browser on your computer only. So nothing is sent to a webserver. Your data stays safe. Visit the 
-              a(href='https://github.com/Hoogkamer/xledit' target='_blank') Github page
+            table.items
+              tr
+                td 
+                  .item 
+                   
+                    img.imgitem(src='@/assets/images/undraw_Options_re_9vxh.svg')
+                    .title1 Easy
+                    .text1 If you already have your data in an excel document, you can import it to quickly get started. You only have to provide some information for each column.
+
+                td 
+                  .item 
+                    
+                    img.imgitem(src='@/assets/images/undraw_security_o890.svg')
+                    .title1 Safe
+                    .text1 All processing is done in your browser only. This means that all your data stays on your PC only, and nothing is sent to another location such as a webserver. 
+
+                  
+                td 
+                  .item 
+                    
+                    img.imgitem(src='@/assets/images/undraw_Gift_re_qr17.svg')
+                    .title1 Free
+                    .text1 This application is free to use. Visit the github page if you want to contribute!
+
             .cont -
             .cont For example: create an app to manage your collection of music albums, with artists and songs. Download this excel and then open in the application to see an example: 
               a(href='./CD_Database.xlsx' download) CD database
@@ -126,6 +148,9 @@ td {
   text-align: center;
   margin-bottom: 40px;
 }
+.cont {
+  font-size: 20px;
+}
 .section {
   max-width: 1100px;
   margin: auto;
@@ -152,5 +177,23 @@ td {
   float: right;
   height: 50px;
   margin: 20px;
+}
+table.items {
+  width: 100%;
+  margin: 40px 0px;
+}
+.item {
+  width: 100%;
+  text-align: center;
+}
+.imgitem {
+  height: 140px;
+}
+.title1 {
+  font-size: 40px;
+  color: grey;
+  width: 100%;
+  text-align: center;
+  margin-top: -10px;
 }
 </style>
