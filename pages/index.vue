@@ -1,24 +1,28 @@
 <template lang="pug">
     v-app
+        
         .header(:style="{ backgroundImage: `url(${image})`}")
-            .logo
-                span.t1 XL
-                span.t2 edit
-            a(href='https://github.com/Hoogkamer/xledit' target='_blank' title='Github repository')
-              img.github(src='@/assets/images/GitHub-Mark-64px.png')
-            table
-                tr
-                    td
-                        .message A web app for excel sheets.
-                        NuxtLink(to="/app") 
-                          .button 
-                            .bt GET STARTED
-                    td
-                        img.apptitle(src='@/assets/images/undraw_feeling_proud_qne1.svg')
+            .section
+              .logo
+                  span ///
+                  span.t1 XL
+                  span.t2 edit
+              a(href='https://github.com/Hoogkamer/xledit' target='_blank' title='Github repository')
+                img.github(src='@/assets/images/GitHub-Mark-64px.png')
+              table
+                  tr
+                      td
+                          .message A web app for excel sheets.
+                          NuxtLink(to="/app") 
+                            .button 
+                              .bt GET STARTED
+                      td
+                          img.apptitle(src='@/assets/images/undraw_feeling_proud_qne1.svg')
         .content
           .section
-            .title - A very easy solution to visualise and edit excel sheets -
-            .cont Are you using excel to manage data? Do you need an easy web based solution to manage lists of data? Then this app is for you! You specify what you want. Then this app automatically creates an application with sorts and filters and edit function for you excel sheets. You can get started in minutes!
+            .title - Visualise and edit excel sheets -
+            .cont Are you using excel to manage data? Do you need an easy web based solution to manage lists of data? Then this app is for you! This app automatically creates an application with sorts and filters and edit function for you excel sheets. 
+            .cont You can get started 1 minute!
             .cont -
             table.items
               tr
