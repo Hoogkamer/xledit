@@ -2,11 +2,9 @@
      v-app-bar(color="deep-purple accent-4" dense dark elevate-on-scroll absolute)
         NuxtLink(to="/") 
           .logo
-            .brandname0.b1 /
-            .brandname0.b2 /
-            .brandname0.b3 / 
-            .bspace
-            .brandname1 XL
+            .brandname0.b1 )
+            .brandname0.b2 (
+            .brandname1 L
             .brandname2 edit
             .bspace2
 
@@ -61,17 +59,28 @@ export default {
 .brandname1,
 .brandname2 {
   color: white;
-  font-size: 24px;
+  font-size: 30px;
   display: inline-block;
 }
 .b1 {
-  font-weight: 100;
+  font-size: 48px;
+  font-weight: bold;
+  color: #fff;
+  margin-bottom: 0;
+  font-family: 'Courier New', Courier, monospace;
 }
 .b2 {
-  font-weight: 300;
+  font-size: 48px;
+  font-weight: bold;
+  color: #fff;
+  margin-bottom: 0;
+  font-family: 'Courier New', Courier, monospace;
+  margin-left: -15px;
 }
 .b3 {
-  font-weight: 600;
+}
+.brandname1 {
+  margin-left: -10px;
 }
 .brandname2 {
   font-style: italic;

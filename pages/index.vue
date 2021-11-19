@@ -4,8 +4,9 @@
         .header(:style="{ backgroundImage: `url(${image})`}")
             .section
               .logo
-                  span ///
-                  span.t1 XL
+                  span.t0 )
+                  span.t00 (
+                  span.t000 L
                   span.t2 edit
               a(href='https://github.com/Hoogkamer/xledit' target='_blank' title='Github repository')
                 img.github(src='@/assets/images/GitHub-Mark-64px.png')
@@ -86,6 +87,20 @@ export default {
 }
 </script>
 <style scoped>
+.t0,
+.t00 {
+  font-size: 48px;
+  font-weight: bold;
+  color: #fff;
+  margin-bottom: 0;
+  font-family: 'Courier New', Courier, monospace;
+}
+.t00 {
+  margin-left: -15px;
+}
+.t000 {
+  margin-left: -10px;
+}
 .logo {
   width: 400px;
   display: inline-block;
